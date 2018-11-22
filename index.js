@@ -9,31 +9,19 @@ const app = dialogflow({debug: true});
 // Handle the Dialogflow intent named 'pokedex number'.
 // The intent collects a parameter named 'number'.
 app.intent('pokedex number', (conv, {number}) => {
-    var https = require('https');
-    var path = 'api/v2/pokemon/'+number;
+    var rp = require('request-promise-native');
+
     var options = {
-        host: 'pokeapi.co',
-        path: path,
-        method: 'GET',
-        headers: {}
-    };
-    var req = https.request(options, function(res) {
-        res.setEncoding('utf-8');
-    
-        var responseString = '';
-    
-        res.on('data', function(data) {
-          responseString += data;
-        });
-    
-        res.on('end', function() {
-          var responseObject = JSON.parse(responseString);
-          conv.close('Pokemon with pokedex number ' + number + ' is ' + responseObject.name)
-        });
+      uri: 'https://pokeapi.co/api/v2/pokemon/'+number,
+      json: true
+    }
+    return rp(options)
+      .then( response => {
+        console.log( 'response:', JSON.stringify(response, null, 1) );
+	var value = response.name;
+	return conv.close('Pokemon with pokedex number ' + number + ' is ' + value);
     });
 
-    req.write();
-    req.end();
 });
 
 // Set the DialogflowApp object to handle the HTTPS POST request.
