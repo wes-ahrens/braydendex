@@ -13,7 +13,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
 function pokedexNumber (agent) {
-	agent.add('Pokemon with pokedex number 1 is bulbasaur');
+	console.log(agent.parameters);
+	const number = agent.parameters.number;
+	const request = require('request-promise-native');
+	const url = 'https://pokeapi.co/api/v2/pokemon/'+number;
+	console.log(url);
+	return request.get(url)
+		.then( jsonBody => {
+			agent.add('Pokemon with pokedex number ' + number + ' is ' + jsonBody.name);
+			return Promise.resolve(agent);
+		}
+//	agent.add('Pokemon with pokedex number 1 is bulbasaur');
 }
 
 function WebhookProcessing(req, res) {
