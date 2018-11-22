@@ -32,7 +32,7 @@ app.post('/', function (req, res) {
 });
 
 app.listen(PORT, function() {
-	console.info('Webhook listening on port ' + port);
+	console.info('Webhook listening on port ' + PORT);
 });
 
 // Instantiate the Dialogflow client.
