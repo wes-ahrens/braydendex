@@ -2,27 +2,56 @@
 
 // Import the Dialogflow module from the Actions on Google client library.
 const {dialogflow} = require('actions-on-google');
+const {WebhookClient} = require('dialogflow-fulfillment');
+
+const express = require('express');
+const bodyParser = require('body-parser');
+
+const app = express();
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
+function pokedexNumber (agent) {
+	agent.add('Pokemon with pokedex number 1 is bulbasaur');
+}
+
+function WebhookProcessing(req, res) {
+	const agent = new WebhookClient({request: req, response: res});
+	console.info('agent set');
+
+	let intentMap = new Map();
+	intentMap.set('pokedex number', pokedexNumber);
+	agent.handleRequest(intentMap);
+}
+
+// Webhook
+app.post('/', function (req, res) {
+	console.info('\n\n>>>>>> S E R V E R    H I T <<<<<<<');
+	WebhookProcessing(req, res);
+});
+
+app.listen(8080, function() {
+	console.info('Webhook listening on port 8080!');
+});
 
 // Instantiate the Dialogflow client.
-const app = dialogflow({debug: true});
+//const app = dialogflow({debug: true});
 
 // Handle the Dialogflow intent named 'pokedex number'.
 // The intent collects a parameter named 'number'.
-app.intent('pokedex number', (conv, {number}) => {
-    var rp = require('request-promise-native');
+//app.intent('pokedex number', (conv, {number}) => {
+//    var rp = require('request-promise-native');
 
-    var options = {
-      uri: 'https://pokeapi.co/api/v2/pokemon/'+number,
-      json: true
-    }
-    return rp(options)
-      .then( response => {
-        console.log( 'response:', JSON.stringify(response, null, 1) );
-	var value = response.name;
-	return conv.close('Pokemon with pokedex number ' + number + ' is ' + value);
-    });
+//    var options = {
+//      uri: 'https://pokeapi.co/api/v2/pokemon/'+number,
+//      json: true
+//    }
+//    return rp(options)
+//      .then( response => {
+//        console.log( 'response:', JSON.stringify(response, null, 1) );
+//	var value = response.name;
+//	return conv.close('Pokemon with pokedex number ' + number + ' is ' + value);
+//    });
+//
+//});
 
-});
-
-// Set the DialogflowApp object to handle the HTTPS POST request.
-exports.dialogflowFirebaseFulfillment = functions.https.onRequest(app);
