@@ -20,8 +20,8 @@ function pokedexNumber (agent) {
 	console.log(url);
 	return request.get(url)
 		.then( jsonBody => {
-			console.log(JSON.parse(jsonBody));
-			agent.add('Pokemon with pokedex number ' + number + ' is ' + jsonBody.name);
+			var body = JSON.parse(jsonBody);
+			agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name);
 			return Promise.resolve(agent);
 		})
 //	agent.add('Pokemon with pokedex number 1 is bulbasaur');
