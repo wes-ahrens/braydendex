@@ -22,7 +22,7 @@ function pokedexNumber (agent) {
 		.then( jsonBody => {
 			agent.add('Pokemon with pokedex number ' + number + ' is ' + jsonBody.name);
 			return Promise.resolve(agent);
-		}
+		})
 //	agent.add('Pokemon with pokedex number 1 is bulbasaur');
 }
 
