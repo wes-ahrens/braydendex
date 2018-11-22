@@ -4,6 +4,7 @@
 const {dialogflow} = require('actions-on-google');
 const {WebhookClient} = require('dialogflow-fulfillment');
 
+const PORT = process.env.PORT || 8080
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -30,8 +31,8 @@ app.post('/', function (req, res) {
 	WebhookProcessing(req, res);
 });
 
-app.listen(8080, function() {
-	console.info('Webhook listening on port 8080!');
+app.listen(PORT, function() {
+	console.info('Webhook listening on port ${ PORT }!');
 });
 
 // Instantiate the Dialogflow client.
