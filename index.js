@@ -20,6 +20,7 @@ function pokedexNumber (agent) {
 	console.log(url);
 	return request.get(url)
 		.then( jsonBody => {
+			console.log(JSON.parse(jsonBody));
 			agent.add('Pokemon with pokedex number ' + number + ' is ' + jsonBody.name);
 			return Promise.resolve(agent);
 		})
