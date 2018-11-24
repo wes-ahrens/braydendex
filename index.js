@@ -44,7 +44,7 @@ function WebhookProcessing (req, res) {
 
 // Webhook
 app.post('/', function (req, res) {
-  console.info('POST ' + req)
+  console.info('POST ' + JSON.stringify(req))
   WebhookProcessing(req, res)
 })
 
