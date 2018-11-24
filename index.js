@@ -34,7 +34,16 @@ function pokedexNumberColour (agent) {
 
 function WebhookProcessing (req, res) {
   const agent = new WebhookClient({ request: req, response: res })
-  console.info('agent set')
+  console.info('agentVersion:' + agent.agentVersion)
+  console.info('intent:' + agent.intent)
+  console.info('action:' + agent.action)
+  console.info('parameters:' + agent.parameters)
+  console.info('contexts:' + agent.contexts)
+  console.info('requestSource:' + agent.requestSource)
+  console.info('originalRequest:' + agent.originalRequest)
+  console.info('query:' + agent.query)
+  console.info('locale:' + agent.locale)
+  console.info('session:' + agent.session)
 
   let intentMap = new Map()
   intentMap.set('pokedex number', pokedexNumber)
@@ -44,7 +53,7 @@ function WebhookProcessing (req, res) {
 
 // Webhook
 app.post('/', function (req, res) {
-  console.info('POST ' + JSON.stringify(req))
+  console.info('POST request received')
   WebhookProcessing(req, res)
 })
 
