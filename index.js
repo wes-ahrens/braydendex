@@ -7,6 +7,7 @@ const { WebhookClient } = require('dialogflow-fulfillment')
 const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
+const jsonpath = require('jsonpath')
 
 const app = express()
 app.use(bodyParser.json())
@@ -27,7 +28,7 @@ function pokedexNumber (agent) {
 }
 
 function pokedexNumberColour (agent) {
-  console.log(agent.parameters)
+  console.log(jsonpath.query(agent.contexts, '$[@.name=="pokedexnumber-followup"].parameters'))
   console.log('asking for colour')
   agent.add('Not sure what colour the pokemon is')
 }
