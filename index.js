@@ -28,9 +28,9 @@ function pokedexNumber (agent) {
 }
 
 function pokedexNumberColour (agent) {
-  const context = jsonpath.query(agent.contexts, '$[?(@.name=="pokedexnumber-followup")][0]')
+  const context = jsonpath.query(agent.contexts, '$[?(@.name=="pokedexnumber-followup")]')
   console.log(context)
-  const parameters = context.parameters
+  const parameters = context[0].parameters
   const number = parameters.number
   console.log(parameters)
   console.log(number)
