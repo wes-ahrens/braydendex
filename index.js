@@ -28,7 +28,7 @@ function pokedexNumber (agent) {
 }
 
 function pokedexNumberColour (agent) {
-  console.log(jsonpath.query(agent.contexts, '$[@.name=="pokedexnumber-followup"].parameters'))
+  console.log(jsonpath.query(agent.contexts, '$[?@.name=="pokedexnumber-followup"].parameters'))
   console.log('asking for colour')
   agent.add('Not sure what colour the pokemon is')
 }
