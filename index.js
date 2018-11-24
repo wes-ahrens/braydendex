@@ -28,7 +28,7 @@ function pokedexNumber (agent) {
 }
 
 function pokedexNumberColour (agent) {
-  const ctxtapi = agent.context.get('pokedexnumber-followup')
+  const ctxtapi = agent.contexts.get('pokedexnumber-followup')
   console.log(ctxtapi)
   const context = jsonpath.query(agent.contexts, '$[?(@.name=="pokedexnumber-followup")]')
   console.log(context)
