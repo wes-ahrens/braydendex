@@ -7,7 +7,6 @@ const { WebhookClient } = require('dialogflow-fulfillment')
 const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
-const jsonpath = require('jsonpath')
 const Pokedex = require('pokedex-promise-v2')
 const pokeapi = new Pokedex({ 'protocol': 'https' })
 
@@ -34,15 +33,14 @@ function pokedexNumber (agent) {
 }
 
 function pokedexNumberColour (agent) {
-  console.log(agent.getContext('pokedexnumber-followup'))
-  const context = jsonpath.query(agent.contexts, '$[?(@.name=="pokedexnumber-followup")]')
+  console.log('Asking for colour...')
+  const context = agent.getContext('pokemon')
   console.log(context)
-  const parameters = context[0].parameters
-  const number = parameters.number
-  console.log(parameters)
-  console.log(number)
-  console.log('asking for colour')
-  agent.add('Not sure what colour the pokemon is')
+  return pokeapi.getPokemonSpeciesByName(context.parameters.pokedex)
+    .then(function (body) {
+      agent.add(body.name + ' is ' + body.color.name)
+      return Promise.resolve(agent)
+    })
 }
 
 function WebhookProcessing (req, res) {
