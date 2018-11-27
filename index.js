@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 function pokedexNumber (agent) {
   console.log(agent.parameters)
   const number = agent.parameters.number
-  return pokeapi.getPokemonById(number)
+  return pokeapi.getPokemonByName(number)
     .then(jsonBody => {
       var body = JSON.parse(jsonBody)
       agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
