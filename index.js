@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
 const jsonpath = require('jsonpath')
+const Pokedex = require('pokedex-promise-v2')
+const pokeapi = new Pokedex({ 'protocol': 'https' })
 
 const app = express()
 app.use(bodyParser.json())
@@ -16,16 +18,20 @@ app.use(bodyParser.urlencoded({ extended: true }))
 function pokedexNumber (agent) {
   console.log(agent.parameters)
   const number = agent.parameters.number
-  const request = require('request-promise-native')
-  const url = 'https://pokeapi.co/api/v2/pokemon/' + number
-  console.log(url)
-  return request.get(url)
+  return pokeapi.getPokemonById(number)
     .then(jsonBody => {
       var body = JSON.parse(jsonBody)
       agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
       return Promise.resolve(agent)
     })
+//  return request.get(url)
+//    .then(jsonBody => {
+//      var body = JSON.parse(jsonBody)
+//      agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
+//      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
+//      return Promise.resolve(agent)
+//    })
 }
 
 function pokedexNumberColour (agent) {
