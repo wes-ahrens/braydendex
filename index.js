@@ -23,13 +23,13 @@ function pokedexNumber (agent) {
     .then(jsonBody => {
       var body = JSON.parse(jsonBody)
       agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
+      agent.setContext({ 'name': 'pokemon', parameters: { 'pokemonobj': body } })
       return Promise.resolve(agent)
     })
 }
 
 function pokedexNumberColour (agent) {
-  const ctxtapi = agent.contexts.get('pokedexnumber-followup')
-  console.log(ctxtapi)
+  console.log(agent.getContext('pokedexnumber-followup'))
   const context = jsonpath.query(agent.contexts, '$[?(@.name=="pokedexnumber-followup")]')
   console.log(context)
   const parameters = context[0].parameters
