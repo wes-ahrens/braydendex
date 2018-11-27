@@ -23,7 +23,7 @@ function pokedexNumber (agent) {
     .then(jsonBody => {
       var body = JSON.parse(jsonBody)
       agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
-      agent.setContext({ 'name': 'pokemon', parameters: { 'pokemonobj': body } })
+      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
       return Promise.resolve(agent)
     })
 }
