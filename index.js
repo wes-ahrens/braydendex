@@ -19,8 +19,7 @@ function pokedexNumber (agent) {
   console.log(agent.parameters)
   const number = agent.parameters.number
   return pokeapi.getPokemonByName(number)
-    .then(jsonBody => {
-      var body = JSON.parse(jsonBody)
+    .then(function (body) {
       agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
       return Promise.resolve(agent)
