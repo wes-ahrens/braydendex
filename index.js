@@ -15,9 +15,10 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 let intentMap = new Map()
-intentMap.set('pokemon name', pokemonName)
+intentMap.set('name', pokemonName)
 intentMap.set('pokedex number', pokedexNumber)
-intentMap.set('pokemon colour', pokemonColour)
+intentMap.set('colour', pokemonColour)
+intentMap.set('type', pokemonType)
 
 function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
@@ -43,6 +44,21 @@ function pokemonColour (agent) {
     .then(function (body) {
       agent.add(body.name + ' is ' + body.color.name)
       return Promise.resolve(agent)
+    })
+}
+
+function pokemonType (agent) {
+  console.log('Asking for type...')
+  return pokeapi.getPokemonByName(agent.getContext('pokemon').parameters.pokedex)
+    .then(function (body) {
+      var typestr = ''
+      for (var typeitem in body.types) {
+        if (typestr !== '') {
+          typestr += ' and '
+        }
+        typestr += typeitem.type.name + ' type'
+      }
+      agent.add(body.name + ' is ' + typestr)
     })
 }
 
