@@ -14,13 +14,24 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+function pokemonName (agent) {
+  console.log(agent.parameters)
+  const name = agent.parameters.Pokemon
+  return pokeapi.getPokemonByName(name)
+    .then(function (body) {
+      agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
+      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
+      return Promise.resolve(agent)
+    })
+}
+
 function pokedexNumber (agent) {
   console.log(agent.parameters)
   const number = agent.parameters.number
   return pokeapi.getPokemonByName(number)
     .then(function (body) {
-      agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
-      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
+      agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
+      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
       return Promise.resolve(agent)
     })
 //  return request.get(url)
@@ -32,7 +43,7 @@ function pokedexNumber (agent) {
 //    })
 }
 
-function pokedexNumberColour (agent) {
+function pokemonColour (agent) {
   console.log('Asking for colour...')
   const context = agent.getContext('pokemon')
   console.log(context)
@@ -60,8 +71,9 @@ function WebhookProcessing (req, res) {
   console.log('session:' + agent.session)
 
   let intentMap = new Map()
+  intentMap.set('pokemon name', pokemonName)
   intentMap.set('pokedex number', pokedexNumber)
-  intentMap.set('pokedex number_colour', pokedexNumberColour)
+  intentMap.set('pokemon_colour', pokemonColour)
   agent.handleRequest(intentMap)
 }
 
