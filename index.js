@@ -52,11 +52,11 @@ function pokemonType (agent) {
   return pokeapi.getPokemonByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
       var typestr = ''
-      for (var typeitem in body.types) {
+      for (var i = 0; i < body.types.length; i++) {
         if (typestr !== '') {
           typestr += ' and '
         }
-        typestr += typeitem.type.name + ' type'
+        typestr += body.types[i].type.name + ' type'
       }
       agent.add(body.name + ' is ' + typestr)
       return Promise.resolve(agent)
