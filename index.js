@@ -14,12 +14,14 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+let intentMap = new Map()
+intentMap.set('pokemon name', pokemonName)
+intentMap.set('pokedex number', pokedexNumber)
+intentMap.set('pokemon colour', pokemonColour)
+
 function pokemonName (agent) {
-  console.log(agent.parameters)
-  const name = agent.parameters.Pokemon
-  return pokeapi.getPokemonByName(name)
+  return pokeapi.getPokemonByName(agent.parameters.Pokemon)
     .then(function (body) {
-      console.log(body)
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
       return Promise.resolve(agent)
@@ -27,28 +29,17 @@ function pokemonName (agent) {
 }
 
 function pokedexNumber (agent) {
-  console.log(agent.parameters)
-  const number = agent.parameters.number
-  return pokeapi.getPokemonByName(number)
+  return pokeapi.getPokemonByName(agent.parameters.number)
     .then(function (body) {
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
       return Promise.resolve(agent)
     })
-//  return request.get(url)
-//    .then(jsonBody => {
-//      var body = JSON.parse(jsonBody)
-//      agent.add('Pokemon with pokedex number ' + number + ' is ' + body.name)
-//      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': number } })
-//      return Promise.resolve(agent)
-//    })
 }
 
 function pokemonColour (agent) {
   console.log('Asking for colour...')
-  const context = agent.getContext('pokemon')
-  console.log(context)
-  return pokeapi.getPokemonSpeciesByName(context.parameters.pokedex)
+  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
       agent.add(body.name + ' is ' + body.color.name)
       return Promise.resolve(agent)
@@ -65,17 +56,9 @@ function WebhookProcessing (req, res) {
   console.log('contexts:')
   console.log(agent.contexts)
   console.log('requestSource:' + agent.requestSource)
-  console.log('originalRequest:')
-  console.log(agent.originalRequest)
   console.log('query:' + agent.query)
-  console.log('locale:' + agent.locale)
   console.log('session:' + agent.session)
 
-  let intentMap = new Map()
-  intentMap.set('pokemon name', pokemonName)
-  intentMap.set('pokedex number', pokedexNumber)
-  intentMap.set('pokemon_colour', pokemonColour)
-  intentMap.set('pokemon colour', pokemonColour)
   agent.handleRequest(intentMap)
 }
 
