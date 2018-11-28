@@ -59,6 +59,7 @@ function pokemonType (agent) {
         typestr += typeitem.type.name + ' type'
       }
       agent.add(body.name + ' is ' + typestr)
+      return Promise.resolve(agent)
     })
 }
 
