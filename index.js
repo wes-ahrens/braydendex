@@ -17,7 +17,6 @@ app.use(bodyParser.urlencoded({ extended: true }))
 function pokemonName (agent) {
   console.log(agent.parameters)
   const name = agent.parameters.Pokemon
-  console.log(name)
   return pokeapi.getPokemonByName(name)
     .then(function (body) {
       console.log(body)
@@ -76,6 +75,7 @@ function WebhookProcessing (req, res) {
   intentMap.set('pokemon name', pokemonName)
   intentMap.set('pokedex number', pokedexNumber)
   intentMap.set('pokemon_colour', pokemonColour)
+  intentMap.set('pokemon colour', pokemonColour)
   agent.handleRequest(intentMap)
 }
 
