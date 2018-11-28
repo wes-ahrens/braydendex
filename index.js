@@ -17,8 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }))
 function pokemonName (agent) {
   console.log(agent.parameters)
   const name = agent.parameters.Pokemon
+  console.log(name)
   return pokeapi.getPokemonByName(name)
     .then(function (body) {
+      console.log(body)
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
       return Promise.resolve(agent)
