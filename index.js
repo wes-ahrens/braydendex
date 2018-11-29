@@ -68,9 +68,13 @@ function pokemonEvolution (agent) {
   console.log('Asking for evolutions...')
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      console.log(body.evolution_chain)
-      agent.add(body.name + ' does not have evolve')
-      return Promise.resolve(agent)
+      console.log(body.evolution_chain.url)
+      return pokeapi.resource(body.evolution_chain.url)
+        .then(function (evoBody) {
+          console.log(evoBody)
+          agent.add(body.name + ' does not have evolve')
+          return Promise.resolve(agent)
+        })
     })
 }
 
