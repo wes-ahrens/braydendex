@@ -68,14 +68,38 @@ function pokemonEvolution (agent) {
   console.log('Asking for evolutions...')
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      console.log(body.evolution_chain.url)
       return pokeapi.resource(body.evolution_chain.url)
         .then(function (evoBody) {
           console.log(evoBody)
-          agent.add(body.name + ' does not have evolve')
+          var chain = evoBody.chain
+          agent.add(createEvolutionString(chain))
           return Promise.resolve(agent)
         })
     })
+}
+
+function createEvolutionString (node) {
+  var evolves = node.evolves_to
+  var evoString = node.species.name
+  if (evolves.length === 0) {
+    evoString += ' does not evolve'
+  } else {
+    evoString += ' evolves to '
+    var extra = []
+    var names = []
+    evolves.forEach(function (value) {
+      names.push(value.species.name)
+      if (value.evolves_to.length > 0) {
+        extra.push(createEvolutionString(value.evolves_to))
+      }
+    })
+    evoString += names.join(' or ')
+    evoString += '.'
+    extra.forEach(function (value) {
+      evoString += value
+    })
+  }
+  return evoString
 }
 
 function WebhookProcessing (req, res) {
