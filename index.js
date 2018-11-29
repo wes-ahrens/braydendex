@@ -79,6 +79,7 @@ function pokemonEvolution (agent) {
 }
 
 function createEvolutionString (node) {
+  console.log(node)
   var evolves = node.evolves_to
   var evoString = node.species.name
   if (evolves.length === 0) {
