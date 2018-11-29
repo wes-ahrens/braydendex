@@ -20,6 +20,7 @@ intentMap.set('pokedex number', pokedexNumber)
 intentMap.set('colour', pokemonColour)
 intentMap.set('type', pokemonType)
 intentMap.set('evolution', pokemonEvolution)
+intentMap.set('varieties', pokemonVarieties)
 
 function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
@@ -44,6 +45,19 @@ function pokemonColour (agent) {
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
       agent.add(body.name + ' is ' + body.color.name)
+      return Promise.resolve(agent)
+    })
+}
+
+function pokemonVarieties (agent) {
+  console.log('Asking if other varieties exist...')
+  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
+    .then(function (body) {
+      body.varieties.forEach(function (value) {
+        if (value.is_default === false) {
+          agent.add(body.name + ' has a variety ' + value.pokemon.name)
+        }
+      })
       return Promise.resolve(agent)
     })
 }
@@ -95,7 +109,7 @@ function createEvolutionString (node) {
       }
     })
     evoString += names.join(' or ')
-    evoString += '.'
+    evoString += '. '
     extra.forEach(function (value) {
       evoString += value
     })
