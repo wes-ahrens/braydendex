@@ -91,7 +91,7 @@ function createEvolutionString (node) {
     evolves.forEach(function (value) {
       names.push(value.species.name)
       if (value.evolves_to.length > 0) {
-        extra.push(createEvolutionString(value.evolves_to))
+        extra.push(createEvolutionString(value))
       }
     })
     evoString += names.join(' or ')
