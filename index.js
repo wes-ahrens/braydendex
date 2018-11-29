@@ -19,6 +19,7 @@ intentMap.set('name', pokemonName)
 intentMap.set('pokedex number', pokedexNumber)
 intentMap.set('colour', pokemonColour)
 intentMap.set('type', pokemonType)
+intentMap.set('evolution', pokemonEvolution)
 
 function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
@@ -59,6 +60,16 @@ function pokemonType (agent) {
         typestr += body.types[i].type.name + ' type'
       }
       agent.add(body.name + ' is ' + typestr)
+      return Promise.resolve(agent)
+    })
+}
+
+function pokemonEvolution (agent) {
+  console.log('Asking for evolutions...')
+  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
+    .then(function (body) {
+      console.log(body.evolution_chain)
+      agent.add(body.name + ' does not have evolve')
       return Promise.resolve(agent)
     })
 }
