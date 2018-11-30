@@ -14,9 +14,9 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-const http = require('http')
+const https = require('https')
 setInterval(function () {
-  http.get('https://braydendex.herokuapp.com/status')
+  https.get('https://braydendex.herokuapp.com/status')
 }, 1200000) // every 20 minutes
 
 let intentMap = new Map()
