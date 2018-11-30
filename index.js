@@ -58,20 +58,54 @@ function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      var formUrls = []
+      var pokemonUrls = []
       body.varieties.forEach(function (value) {
         if (value.is_default === false) {
-          formUrls.push(value.pokemon.url)
-          agent.add(body.name + ' has an alternate form ' + value.pokemon.name)
+          pokemonUrls.push(value.pokemon.url)
         }
       })
-      return pokeapi.resource(formUrls)
-        .then(function (formsBody) {
-          console.log(formsBody)
-          return Promise.resolve(agent)
+      if (pokemonUrls.length === 0) {
+        agent.add(body.name + ' has no other forms')
+        return Promise.resolve(agent)
+      }
+      return pokeapi.resource(pokemonUrls)
+        .then(function (pokemonBody) {
+          var formUrls = []
+          pokemonBody.forEach(function (value) {
+            formUrls.push(value.forms.url)
+          })
+          if (formUrls.length === 0) {
+            agent.add(body.name + ' has no other forms')
+            return Promise.resolve(agent)
+          }
+          return pokeapi.resource(formUrls)
+            .then(function (formBody) {
+              var forms = []
+              formBody.forEach(function (value) {
+                var name = findNameForLanguage(value.names, 'en')
+                if (name != null) {
+                  forms.push(name)
+                }
+              })
+              if (forms.length === 0) {
+                agent.add(pokemonBody.name + ' has no other forms')
+              } else {
+                var formsString = forms.join(' and ')
+                agent.add('The other form(s) of ' + pokemonBody.name + ' are ' + formsString)
+              }
+              return Promise.resolve(agent)
+            })
         })
-
     })
+}
+
+function findNameForLanguage (array, language) {
+  for (var i = 0; i < array.length; i++) {
+    if (array[i].language.name === language) {
+      return array[i].name
+    }
+  }
+  return null
 }
 
 function pokemonType (agent) {
