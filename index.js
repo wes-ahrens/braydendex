@@ -93,7 +93,13 @@ function pokemonForms (agent) {
                 agent.add(pokemonName + ' has no other forms')
               } else {
                 var formsString = forms.join(' and ')
-                agent.add('The other form(s) of ' + pokemonName + ' are ' + formsString)
+                var pluralString1 = 'form'
+                var pluralString2 = ' is '
+                if (forms.length > 1) {
+                  pluralString1 += 's'
+                  pluralString2 = ' are '
+                }
+                agent.add('The other possible ' + pluralString1 + ' of ' + pokemonName + pluralString2 + formsString)
               }
               return Promise.resolve(agent)
             })
