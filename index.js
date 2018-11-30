@@ -84,7 +84,6 @@ function pokemonForms (agent) {
             .then(function (formBody) {
               var forms = []
               formBody.forEach(function (value) {
-                console.log(value)
                 var name = findNameForLanguage(value.names, 'en')
                 if (name != null) {
                   forms.push(name)
