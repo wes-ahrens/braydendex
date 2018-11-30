@@ -71,9 +71,9 @@ function pokemonForms (agent) {
       console.log(pokemonUrls)
       return pokeapi.resource(pokemonUrls)
         .then(function (pokemonBody) {
-          console.log(pokemonBody)
           var formUrls = []
           pokemonBody.forEach(function (value) {
+            console.log(value)
             formUrls.push(value.forms.url)
           })
           if (formUrls.length === 0) {
