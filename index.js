@@ -68,19 +68,16 @@ function pokemonForms (agent) {
         agent.add(body.name + ' has no other forms')
         return Promise.resolve(agent)
       }
-      console.log(pokemonUrls)
       return pokeapi.resource(pokemonUrls)
         .then(function (pokemonBody) {
           var formUrls = []
           pokemonBody.forEach(function (value) {
-            console.log(value)
-            formUrls.push(value.forms.url)
+            formUrls.push(value.forms[0].url)
           })
           if (formUrls.length === 0) {
             agent.add(body.name + ' has no other forms')
             return Promise.resolve(agent)
           }
-          console.log(formUrls)
           return pokeapi.resource(formUrls)
             .then(function (formBody) {
               var forms = []
