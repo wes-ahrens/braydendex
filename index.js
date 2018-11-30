@@ -25,7 +25,7 @@ intentMap.set('pokedex number', pokedexNumber)
 intentMap.set('colour', pokemonColour)
 intentMap.set('type', pokemonType)
 intentMap.set('evolution', pokemonEvolution)
-intentMap.set('varieties', pokemonVarieties)
+intentMap.set('forms', pokemonForms)
 
 function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
@@ -54,16 +54,23 @@ function pokemonColour (agent) {
     })
 }
 
-function pokemonVarieties (agent) {
-  console.log('Asking if other varieties exist...')
+function pokemonForms (agent) {
+  console.log('Asking if other forms exist...')
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
+      var formUrls = []
       body.varieties.forEach(function (value) {
         if (value.is_default === false) {
-          agent.add(body.name + ' has a variety ' + value.pokemon.name)
+          formUrls.push(value.pokemon.url)
+          agent.add(body.name + ' has an alternate form ' + value.pokemon.name)
         }
       })
-      return Promise.resolve(agent)
+      return pokeapi.resource(formUrls)
+        .then(function (formsBody) {
+          console.log(formsBody)
+          return Promise.resolve(agent)
+        })
+
     })
 }
 
