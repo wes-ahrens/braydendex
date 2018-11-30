@@ -56,16 +56,18 @@ function pokemonColour (agent) {
 
 function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
+  var pokemonName
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
       var pokemonUrls = []
+      pokemonName = body.name
       body.varieties.forEach(function (value) {
         if (value.is_default === false) {
           pokemonUrls.push(value.pokemon.url)
         }
       })
       if (pokemonUrls.length === 0) {
-        agent.add(body.name + ' has no other forms')
+        agent.add(pokemonName + ' has no other forms')
         return Promise.resolve(agent)
       }
       return pokeapi.resource(pokemonUrls)
@@ -75,7 +77,7 @@ function pokemonForms (agent) {
             formUrls.push(value.forms[0].url)
           })
           if (formUrls.length === 0) {
-            agent.add(body.name + ' has no other forms')
+            agent.add(pokemonName + ' has no other forms')
             return Promise.resolve(agent)
           }
           return pokeapi.resource(formUrls)
@@ -88,10 +90,10 @@ function pokemonForms (agent) {
                 }
               })
               if (forms.length === 0) {
-                agent.add(pokemonBody.name + ' has no other forms')
+                agent.add(pokemonName + ' has no other forms')
               } else {
                 var formsString = forms.join(' and ')
-                agent.add('The other form(s) of ' + pokemonBody.name + ' are ' + formsString)
+                agent.add('The other form(s) of ' + pokemonName + ' are ' + formsString)
               }
               return Promise.resolve(agent)
             })
