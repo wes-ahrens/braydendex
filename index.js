@@ -14,6 +14,11 @@ const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
+const http = require('http')
+setInterval(function () {
+  http.get('https://braydendex.herokuapp.com/status')
+}, 1200000) // every 20 minutes
+
 let intentMap = new Map()
 intentMap.set('name', pokemonName)
 intentMap.set('pokedex number', pokedexNumber)
@@ -137,6 +142,10 @@ function WebhookProcessing (req, res) {
 app.post('/', function (req, res) {
   console.info('POST request received')
   WebhookProcessing(req, res)
+})
+app.get('/status', function (req, res) {
+  console.info('GET status request received')
+  res.status(200).end()
 })
 
 app.listen(PORT, function () {
