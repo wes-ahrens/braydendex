@@ -68,6 +68,7 @@ function pokemonForms (agent) {
         agent.add(body.name + ' has no other forms')
         return Promise.resolve(agent)
       }
+      console.logs(pokemonUrls)
       return pokeapi.resource(pokemonUrls)
         .then(function (pokemonBody) {
           var formUrls = []
@@ -78,6 +79,7 @@ function pokemonForms (agent) {
             agent.add(body.name + ' has no other forms')
             return Promise.resolve(agent)
           }
+          console.logs(formUrls)
           return pokeapi.resource(formUrls)
             .then(function (formBody) {
               var forms = []
