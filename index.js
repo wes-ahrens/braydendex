@@ -34,6 +34,11 @@ function pokemonName (agent) {
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
       return Promise.resolve(agent)
     })
+    .catch(function (error) {
+      console.log(error)
+      agent.add('Sorry, I could not find pokemon ' + agent.parameters.Pokemon)
+      return Promise.resolve(agent)
+    })
 }
 
 function pokedexNumber (agent) {
@@ -41,6 +46,11 @@ function pokedexNumber (agent) {
     .then(function (body) {
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
       agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
+      return Promise.resolve(agent)
+    })
+    .catch(function (error) {
+      console.log(error)
+      agent.add('Sorry, I could not find pokemon with pokedex number ' + agent.parameters.number)
       return Promise.resolve(agent)
     })
 }
