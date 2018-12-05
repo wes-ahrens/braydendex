@@ -29,42 +29,34 @@ intentMap.set('forms', pokemonForms)
 
 function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
-    .then(function (body) {
-      agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
-      agent.setContext({
-        'name': 'pokemon',
-        parameters: {
-          'pokedex': body.id,
-          'name': body.name
-        }
-      })
-      return Promise.resolve(agent)
-    })
-    .catch(function (error) {
-      console.log(error)
-      agent.add('Sorry, I could not find pokemon ' + agent.parameters.Pokemon)
-      return Promise.resolve(agent)
-    })
+    .then(body => pokemonContext(agent, body))
+    .catch(error => handleError(agent, error,
+      'Sorry, I could not find pokemon ' + agent.parameters.Pokemon))
 }
 
 function pokedexNumber (agent) {
   return pokeapi.getPokemonByName(agent.parameters.number)
-    .then(function (body) {
-      agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
-      agent.setContext({
-        'name': 'pokemon',
-        parameters: {
-          'pokedex': body.id,
-          'name': body.name
-        }
-      })
-      return Promise.resolve(agent)
-    })
-    .catch(function (error) {
-      console.log(error)
-      agent.add('Sorry, I could not find pokemon with pokedex number ' + agent.parameters.number)
-      return Promise.resolve(agent)
-    })
+    .then(body => pokemonContext(agent, body))
+    .catch(error => handleError(agent, error,
+      'Sorry, I could not find pokemon with pokedex number ' + agent.parameters.number))
+}
+
+function handleError (agent, error, message) {
+  console.log(error)
+  agent.add(message)
+  return Promise.resolve(agent)
+}
+
+function pokemonContext (agent, body) {
+  agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
+  agent.setContext({
+    'name': 'pokemon',
+    parameters: {
+      'pokedex': body.id,
+      'name': body.name
+    }
+  })
+  return Promise.resolve(agent)
 }
 
 function pokemonColour (agent) {
@@ -91,17 +83,12 @@ function pokemonForms (agent) {
       return pokeapi.resource(pokemonUrls)
     })
     .then(function (pokemonBody) {
-      console.log('pokemonBody')
-      console.log(pokemonBody)
       var formUrls = []
       pokemonBody.forEach(function (value) {
         value.forms.forEach(value => {
           formUrls.push(value.url)
         })
       })
-      if (formUrls.length === 1) {
-        throw new Error(pokemonName + ' has no other forms')
-      }
       return pokeapi.resource(formUrls)
     })
     .then(function (formBody) {
@@ -112,8 +99,8 @@ function pokemonForms (agent) {
           forms.push(name)
         }
       })
-      if (forms.length === 0) {
-        throw new Error(pokemonName + ' has no other forms')
+      if (forms.length === 1) {
+        throw new Error(pokemonName + ' has only one form')
       } else {
         var formsString = forms.join(' and ')
         var pluralString1 = 'form'
@@ -163,9 +150,7 @@ function pokemonEvolution (agent) {
     .then(function (body) {
       return pokeapi.resource(body.evolution_chain.url)
         .then(function (evoBody) {
-          console.log(evoBody)
-          var chain = evoBody.chain
-          agent.add(createEvolutionString(chain))
+          agent.add(createEvolutionString(evoBody.chain))
           return Promise.resolve(agent)
         })
     })
