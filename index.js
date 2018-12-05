@@ -31,7 +31,13 @@ function pokemonName (agent) {
   return pokeapi.getPokemonByName(agent.parameters.Pokemon)
     .then(function (body) {
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
-      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
+      agent.setContext({
+        'name': 'pokemon',
+        parameters: {
+          'pokedex': body.id,
+          'name': body.name
+        }
+      })
       return Promise.resolve(agent)
     })
     .catch(function (error) {
@@ -45,7 +51,13 @@ function pokedexNumber (agent) {
   return pokeapi.getPokemonByName(agent.parameters.number)
     .then(function (body) {
       agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
-      agent.setContext({ 'name': 'pokemon', parameters: { 'pokedex': body.id } })
+      agent.setContext({
+        'name': 'pokemon',
+        parameters: {
+          'pokedex': body.id,
+          'name': body.name
+        }
+      })
       return Promise.resolve(agent)
     })
     .catch(function (error) {
@@ -62,6 +74,11 @@ function pokemonColour (agent) {
       agent.add(body.name + ' is ' + body.color.name)
       return Promise.resolve(agent)
     })
+    .catch(function (error) {
+      console.log(error)
+      agent.add('Sorry, could not retrieve colour for ' + agent.getContext('pokemon').parameters.name)
+      return Promise.resolve(agent)
+    })
 }
 
 function pokemonForms (agent) {
@@ -71,49 +88,46 @@ function pokemonForms (agent) {
     .then(function (body) {
       var pokemonUrls = []
       pokemonName = body.name
-      body.varieties.forEach(function (value) {
-        if (value.is_default === false) {
-          pokemonUrls.push(value.pokemon.url)
+      body.varieties.map(value => value.pokemon.url)
+      return pokeapi.resource(pokemonUrls)
+    })
+    .then(function (pokemonBody) {
+      var formUrls = []
+      pokemonBody.forEach(function (value) {
+        value.forms.forEach(value => {
+          formUrls.push(value.url)
+        })
+      })
+      if (formUrls.length === 1) {
+        throw new Error(pokemonName + ' has no other forms')
+      }
+      return pokeapi.resource(formUrls)
+    })
+    .then(function (formBody) {
+      var forms = []
+      formBody.forEach(function (value) {
+        var name = findNameForLanguage(value.names, 'en')
+        if (name != null) {
+          forms.push(name)
         }
       })
-      if (pokemonUrls.length === 0) {
-        agent.add(pokemonName + ' has no other forms')
-        return Promise.resolve(agent)
+      if (forms.length === 0) {
+        throw new Error(pokemonName + ' has no other forms')
+      } else {
+        var formsString = forms.join(' and ')
+        var pluralString1 = 'form'
+        var pluralString2 = ' is '
+        if (forms.length > 1) {
+          pluralString1 += 's'
+          pluralString2 = ' are '
+        }
+        agent.add('The other possible ' + pluralString1 + ' of ' + pokemonName + pluralString2 + formsString)
       }
-      return pokeapi.resource(pokemonUrls)
-        .then(function (pokemonBody) {
-          var formUrls = []
-          pokemonBody.forEach(function (value) {
-            formUrls.push(value.forms[0].url)
-          })
-          if (formUrls.length === 0) {
-            agent.add(pokemonName + ' has no other forms')
-            return Promise.resolve(agent)
-          }
-          return pokeapi.resource(formUrls)
-            .then(function (formBody) {
-              var forms = []
-              formBody.forEach(function (value) {
-                var name = findNameForLanguage(value.names, 'en')
-                if (name != null) {
-                  forms.push(name)
-                }
-              })
-              if (forms.length === 0) {
-                agent.add(pokemonName + ' has no other forms')
-              } else {
-                var formsString = forms.join(' and ')
-                var pluralString1 = 'form'
-                var pluralString2 = ' is '
-                if (forms.length > 1) {
-                  pluralString1 += 's'
-                  pluralString2 = ' are '
-                }
-                agent.add('The other possible ' + pluralString1 + ' of ' + pokemonName + pluralString2 + formsString)
-              }
-              return Promise.resolve(agent)
-            })
-        })
+      return Promise.resolve(agent)
+    })
+    .catch(function (error) {
+      agent.add(error)
+      return Promise.resolve(agent)
     })
 }
 
