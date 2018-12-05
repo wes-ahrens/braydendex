@@ -74,7 +74,10 @@ function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      return pokeapi.resource(body.varieties.map(value => value.pokemon.url))
+      var resources = body.varieties.map(value => value.pokemon.url)
+      console.log('Pokemon URLs:')
+      console.log(resources)
+      return pokeapi.resource(resources)
     })
     .then(function (pokemonBody) {
       var formUrls = []
@@ -83,6 +86,8 @@ function pokemonForms (agent) {
           formUrls.push(value.url)
         })
       })
+      console.log('Form URLs:')
+      console.log(formUrls)
       return pokeapi.resource(formUrls)
     })
     .then(function (formBody) {
@@ -97,6 +102,8 @@ function pokemonForms (agent) {
           }
         }
       })
+      console.log('Forms:')
+      console.log(forms)
       if (forms.length === 1) {
         throw new Error(forms[0] + ' has only one form')
       } else {
