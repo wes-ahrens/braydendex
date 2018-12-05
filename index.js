@@ -66,21 +66,15 @@ function pokemonColour (agent) {
       agent.add(body.name + ' is ' + body.color.name)
       return Promise.resolve(agent)
     })
-    .catch(function (error) {
-      console.log(error)
-      agent.add('Sorry, could not retrieve colour for ' + agent.getContext('pokemon').parameters.name)
-      return Promise.resolve(agent)
-    })
+    .catch(error => handleError(agent, error,
+      'Sorry, could not retrieve colour for ' + agent.getContext('pokemon').parameters.name))
 }
 
 function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
-  var pokemonName
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      pokemonName = body.name
-      var pokemonUrls = body.varieties.map(value => value.pokemon.url)
-      return pokeapi.resource(pokemonUrls)
+      return pokeapi.resource(body.varieties.map(value => value.pokemon.url))
     })
     .then(function (pokemonBody) {
       var formUrls = []
@@ -96,11 +90,15 @@ function pokemonForms (agent) {
       formBody.forEach(function (value) {
         var name = findNameForLanguage(value.names, 'en')
         if (name != null) {
-          forms.push(name)
+          if (value.is_default === true) {
+            forms.unshift(name)
+          } else {
+            forms.push(name)
+          }
         }
       })
       if (forms.length === 1) {
-        throw new Error(pokemonName + ' has only one form')
+        throw new Error(forms[0] + ' has only one form')
       } else {
         var formsString = forms.join(' and ')
         var pluralString1 = 'form'
@@ -109,7 +107,7 @@ function pokemonForms (agent) {
           pluralString1 += 's'
           pluralString2 = ' are '
         }
-        agent.add('The other possible ' + pluralString1 + ' of ' + pokemonName + pluralString2 + formsString)
+        agent.add('The other possible ' + pluralString1 + ' of ' + forms[0] + pluralString2 + formsString)
       }
       return Promise.resolve(agent)
     })
