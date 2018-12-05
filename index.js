@@ -86,12 +86,13 @@ function pokemonForms (agent) {
   var pokemonName
   return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      var pokemonUrls = []
       pokemonName = body.name
-      body.varieties.map(value => value.pokemon.url)
+      var pokemonUrls = body.varieties.map(value => value.pokemon.url)
       return pokeapi.resource(pokemonUrls)
     })
     .then(function (pokemonBody) {
+      console.log('pokemonBody')
+      console.log(pokemonBody)
       var formUrls = []
       pokemonBody.forEach(function (value) {
         value.forms.forEach(value => {
