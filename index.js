@@ -91,17 +91,7 @@ function pokemonForms (agent) {
       return pokeapi.resource(formUrls)
     })
     .then(function (formBody) {
-      var forms = []
-      formBody.forEach(function (value) {
-        var name = findNameForLanguage(value.names, 'en', value.pokemon.name)
-        if (name != null) {
-          if (value.is_default === true) {
-            forms.unshift(name)
-          } else {
-            forms.push(name)
-          }
-        }
-      })
+      var forms = formBody.map(value => findNameForLanguage(value.names, 'en', value.pokemon.name))
       console.log('Forms:')
       console.log(forms)
       var formsString
