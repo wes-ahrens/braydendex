@@ -93,7 +93,7 @@ function pokemonForms (agent) {
     .then(function (formBody) {
       var forms = []
       formBody.forEach(function (value) {
-        var name = findNameForLanguage(value.names, 'en')
+        var name = findNameForLanguage(value.names, 'en', value.pokemon.name)
         if (name != null) {
           if (value.is_default === true) {
             forms.unshift(name)
@@ -104,18 +104,13 @@ function pokemonForms (agent) {
       })
       console.log('Forms:')
       console.log(forms)
+      var formsString
       if (forms.length === 1) {
-        throw new Error(forms[0] + ' has only one form')
+        formsString = forms[0] + ' has only one form'
       } else {
-        var formsString = forms.join(' and ')
-        var pluralString1 = 'form'
-        var pluralString2 = ' is '
-        if (forms.length > 1) {
-          pluralString1 += 's'
-          pluralString2 = ' are '
-        }
-        agent.add('The other possible ' + pluralString1 + ' of ' + forms[0] + pluralString2 + formsString)
+        formsString = forms.join(' and ')
       }
+      agent.add('The forms of ' + forms[0] + ' are ' + formsString)
       return Promise.resolve(agent)
     })
     .catch(function (error) {
@@ -124,13 +119,13 @@ function pokemonForms (agent) {
     })
 }
 
-function findNameForLanguage (array, language) {
+function findNameForLanguage (array, language, ifempty) {
   for (var i = 0; i < array.length; i++) {
     if (array[i].language.name === language) {
       return array[i].name
     }
   }
-  return null
+  return ifempty
 }
 
 function pokemonType (agent) {
