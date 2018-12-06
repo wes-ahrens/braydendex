@@ -100,7 +100,7 @@ function pokemonForms (agent) {
       } else {
         formsString = forms.join(' and ')
       }
-      agent.add('The forms of ' + forms[0] + ' are ' + formsString)
+      agent.add('The possible forms are ' + formsString)
       return Promise.resolve(agent)
     })
     .catch(function (error) {
@@ -122,14 +122,9 @@ function pokemonType (agent) {
   console.log('Asking for type...')
   return pokeapi.getPokemonByName(agent.getContext('pokemon').parameters.pokedex)
     .then(function (body) {
-      var typestr = ''
-      for (var i = 0; i < body.types.length; i++) {
-        if (typestr !== '') {
-          typestr += ' and '
-        }
-        typestr += body.types[i].type.name + ' type'
-      }
-      agent.add(body.name + ' is ' + typestr)
+      const types = body.types.map(type => type.type.name)
+      var typestr = types.join(' and ')
+      agent.add(body.name + ' is ' + typestr + ' type')
       return Promise.resolve(agent)
     })
 }
