@@ -7,6 +7,7 @@ const { WebhookClient } = require('dialogflow-fulfillment')
 const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
+const api = require('./app/api')
 const Pokedex = require('pokedex-promise-v2')
 const pokeapi = new Pokedex({ 'protocol': 'https' })
 
@@ -28,17 +29,20 @@ intentMap.set('evolution', pokemonEvolution)
 intentMap.set('forms', pokemonForms)
 
 function pokemonName (agent) {
-  return pokeapi.getPokemonByName(agent.parameters.Pokemon)
-    .then(body => pokemonContext(agent, body))
+  return selectPokemon(agent, agent.parameters.Pokemon)
     .catch(error => handleError(agent, error,
       'Sorry, I could not find pokemon ' + agent.parameters.Pokemon))
 }
 
 function pokedexNumber (agent) {
-  return pokeapi.getPokemonByName(agent.parameters.number)
-    .then(body => pokemonContext(agent, body))
+  return selectPokemon(agent, agent.parameters.number)
     .catch(error => handleError(agent, error,
       'Sorry, I could not find pokemon with pokedex number ' + agent.parameters.number))
+}
+
+function selectPokemon (agent, pokemonId) {
+  return api.getPokemon(pokemonId)
+    .then(body => pokemonContext(agent, body))
 }
 
 function handleError (agent, error, message) {
@@ -61,13 +65,14 @@ function pokemonContext (agent, body) {
 
 function pokemonColour (agent) {
   console.log('Asking for colour...')
-  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
-    .then(function (body) {
-      agent.add(body.name + ' is ' + body.color.name)
+  const params = agent.getContext('pokemon').parameters
+  return api.getColour(params.pokedex)
+    .then(colour => {
+      agent.add(params.name + ' is ' + colour)
       return Promise.resolve(agent)
     })
     .catch(error => handleError(agent, error,
-      'Sorry, could not retrieve colour for ' + agent.getContext('pokemon').parameters.name))
+      'Sorry, could not retrieve colour for ' + params.name))
 }
 
 function pokemonForms (agent) {
@@ -166,7 +171,9 @@ function createEvolutionString (node) {
   return evoString
 }
 
-function WebhookProcessing (req, res) {
+// Webhook
+app.post('/', function (req, res) {
+  console.info('POST request received')
   const agent = new WebhookClient({ request: req, response: res })
   console.log('agentVersion:' + agent.agentVersion)
   console.log('intent:' + agent.intent)
@@ -180,12 +187,6 @@ function WebhookProcessing (req, res) {
   console.log('session:' + agent.session)
 
   agent.handleRequest(intentMap)
-}
-
-// Webhook
-app.post('/', function (req, res) {
-  console.info('POST request received')
-  WebhookProcessing(req, res)
 })
 app.get('/status', function (req, res) {
   console.info('GET status request received')

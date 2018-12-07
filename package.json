@@ -9,16 +9,22 @@
     "node": "10.x"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "mocha --exit"
   },
   "dependencies": {
     "actions-on-google": "^2.2.0",
     "dialogflow": "^0.6.0",
     "dialogflow-fulfillment": "^0.5.0",
-    "request-promise-native": "^1.0.5",
-    "request": "^2.34",
     "express": "^4.15.2",
-    "jsonpath":"^1.0.0",
-    "pokedex-promise-v2":"^3.1.1"
+    "jsonpath": "^1.0.0",
+    "pokedex-promise-v2": "^3.1.1",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "nock": "^10.0.3"
   }
 }
