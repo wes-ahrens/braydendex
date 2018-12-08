@@ -8,8 +8,6 @@ const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
 const api = require('./app/api')
-const Pokedex = require('pokedex-promise-v2')
-const pokeapi = new Pokedex({ 'protocol': 'https' })
 
 const app = express()
 app.use(bodyParser.json())
@@ -77,28 +75,9 @@ function pokemonColour (agent) {
 
 function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
-  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
-    .then(function (body) {
-      var resources = body.varieties.map(value => value.pokemon.url)
-      console.log('Pokemon URLs:')
-      console.log(resources)
-      return pokeapi.resource(resources)
-    })
-    .then(function (pokemonBody) {
-      var formUrls = []
-      pokemonBody.forEach(function (value) {
-        value.forms.forEach(value => {
-          formUrls.push(value.url)
-        })
-      })
-      console.log('Form URLs:')
-      console.log(formUrls)
-      return pokeapi.resource(formUrls)
-    })
-    .then(function (formBody) {
-      var forms = formBody.map(value => findNameForLanguage(value.names, 'en', value.pokemon.name))
-      console.log('Forms:')
-      console.log(forms)
+  const params = agent.getContext('pokemon').parameters
+  return api.getForms(params.pokedex)
+    .then(function (forms) {
       var formsString
       if (forms.length === 1) {
         formsString = forms[0] + ' has only one form'
@@ -114,35 +93,24 @@ function pokemonForms (agent) {
     })
 }
 
-function findNameForLanguage (array, language, ifempty) {
-  for (var i = 0; i < array.length; i++) {
-    if (array[i].language.name === language) {
-      return array[i].name
-    }
-  }
-  return ifempty
-}
-
 function pokemonType (agent) {
   console.log('Asking for type...')
-  return pokeapi.getPokemonByName(agent.getContext('pokemon').parameters.pokedex)
-    .then(function (body) {
-      const types = body.types.map(type => type.type.name)
+  const params = agent.getContext('pokemon').parameters
+  return api.getTypes(params.pokedex)
+    .then(function (types) {
       var typestr = types.join(' and ')
-      agent.add(body.name + ' is ' + typestr + ' type')
+      agent.add(params.name + ' is ' + typestr + ' type')
       return Promise.resolve(agent)
     })
 }
 
 function pokemonEvolution (agent) {
   console.log('Asking for evolutions...')
-  return pokeapi.getPokemonSpeciesByName(agent.getContext('pokemon').parameters.pokedex)
-    .then(function (body) {
-      return pokeapi.resource(body.evolution_chain.url)
-        .then(function (evoBody) {
-          agent.add(createEvolutionString(evoBody.chain))
-          return Promise.resolve(agent)
-        })
+  const params = agent.getContext('pokemon').parameters
+  return api.getEvolutions(params.pokedex)
+    .then(function (chain) {
+      agent.add(createEvolutionString(chain))
+      return Promise.resolve(agent)
     })
 }
 
@@ -172,7 +140,7 @@ function createEvolutionString (node) {
 }
 
 // Webhook
-app.post('/', function (req, res) {
+app.post('/api', function (req, res) {
   console.info('POST request received')
   const agent = new WebhookClient({ request: req, response: res })
   console.log('agentVersion:' + agent.agentVersion)
