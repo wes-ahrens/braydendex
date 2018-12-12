@@ -27,7 +27,21 @@ exports.getTypes = function (pokemonId) {
 exports.getEvolutions = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => pokeapi.resource(body.evolution_chain.url))
-    .then(body => body.chain)
+    .then(body => transformChainNode(body.chain))
+}
+
+function transformChainNode (chain) {
+  var promises = [pokeapi.resource(chain.species.url)]
+    .concat(chain.evolves_to.map(evo => transformChainNode(evo)))
+  return Promise.all(promises)
+    .then(array => {
+      var first = array.shift()
+      return Promise.resolve({
+        'name': findNameForLanguage(first.names, 'en', first.name),
+        'pokemonId': first.id,
+        'evolution': array
+      })
+    })
 }
 
 function flattenFormUrls (array) {

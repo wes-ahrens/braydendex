@@ -80,7 +80,7 @@ function pokemonForms (agent) {
     .then(function (forms) {
       var formsString
       if (forms.length === 1) {
-        formsString = forms[0] + ' has only one form'
+        formsString = params.name + ' has only one form'
       } else {
         formsString = forms.join(' and ')
       }
@@ -116,8 +116,8 @@ function pokemonEvolution (agent) {
 
 function createEvolutionString (node) {
   console.log(node)
-  var evolves = node.evolves_to
-  var evoString = node.species.name
+  var evolves = node.evolution
+  var evoString = node.name
   if (evolves.length === 0) {
     evoString += ' does not evolve'
   } else {
@@ -125,8 +125,8 @@ function createEvolutionString (node) {
     var extra = []
     var names = []
     evolves.forEach(function (value) {
-      names.push(value.species.name)
-      if (value.evolves_to.length > 0) {
+      names.push(value.name)
+      if (value.evolution.length > 0) {
         extra.push(createEvolutionString(value))
       }
     })
