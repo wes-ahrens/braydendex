@@ -40,7 +40,7 @@ function pokedexNumber (agent) {
 
 function selectPokemon (agent, pokemonId) {
   return api.getPokemon(pokemonId)
-    .then(body => pokemonContext(agent, body))
+    .then(pokemonObj => pokemonContext(agent, pokemonObj))
 }
 
 function handleError (agent, error, message) {
@@ -49,14 +49,11 @@ function handleError (agent, error, message) {
   return Promise.resolve(agent)
 }
 
-function pokemonContext (agent, body) {
-  agent.add('Pokemon ' + body.name + ' is pokedex number ' + body.id)
+function pokemonContext (agent, pokemonObj) {
+  agent.add('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
   agent.setContext({
     'name': 'pokemon',
-    parameters: {
-      'pokedex': body.id,
-      'name': body.name
-    }
+    parameters: pokemonObj
   })
   return Promise.resolve(agent)
 }
@@ -64,7 +61,7 @@ function pokemonContext (agent, body) {
 function pokemonColour (agent) {
   console.log('Asking for colour...')
   const params = agent.getContext('pokemon').parameters
-  return api.getColour(params.pokedex)
+  return api.getColour(params.pokemonId)
     .then(colour => {
       agent.add(params.name + ' is ' + colour)
       return Promise.resolve(agent)
@@ -76,15 +73,9 @@ function pokemonColour (agent) {
 function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
   const params = agent.getContext('pokemon').parameters
-  return api.getForms(params.pokedex)
-    .then(function (forms) {
-      var formsString
-      if (forms.length === 1) {
-        formsString = params.name + ' has only one form'
-      } else {
-        formsString = forms.join(' and ')
-      }
-      agent.add('The possible forms are ' + formsString)
+  return api.getForms(params.pokemonId)
+    .then(forms => {
+      agent.add('The possible forms are ' + forms.join(' and '))
       return Promise.resolve(agent)
     })
     .catch(function (error) {
@@ -96,10 +87,9 @@ function pokemonForms (agent) {
 function pokemonType (agent) {
   console.log('Asking for type...')
   const params = agent.getContext('pokemon').parameters
-  return api.getTypes(params.pokedex)
-    .then(function (types) {
-      var typestr = types.join(' and ')
-      agent.add(params.name + ' is ' + typestr + ' type')
+  return api.getTypes(params.pokemonId)
+    .then(types => {
+      agent.add(params.name + ' is ' + types.join(' and ') + ' type')
       return Promise.resolve(agent)
     })
 }
@@ -107,7 +97,7 @@ function pokemonType (agent) {
 function pokemonEvolution (agent) {
   console.log('Asking for evolutions...')
   const params = agent.getContext('pokemon').parameters
-  return api.getEvolutions(params.pokedex)
+  return api.getEvolutions(params.pokemonId)
     .then(function (chain) {
       agent.add(createEvolutionString(chain))
       return Promise.resolve(agent)

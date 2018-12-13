@@ -5,6 +5,8 @@ const pokeapi = new Pokedex({ 'protocol': 'https' })
 
 exports.getPokemon = function (pokemonId) {
   return pokeapi.getPokemonByName(pokemonId)
+    .then(body => pokeapi.getPokemonSpeciesByName(body.id))
+    .then(body => getPokemonObject(body))
 }
 
 exports.getColour = function (pokemonId) {
@@ -28,6 +30,13 @@ exports.getEvolutions = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => pokeapi.resource(body.evolution_chain.url))
     .then(body => transformChainNode(body.chain))
+}
+
+function getPokemonObject (speciesBody) {
+  return {
+    'pokemonId': speciesBody.id,
+    'name': findNameForLanguage(speciesBody.names, 'en', speciesBody.name)
+  }
 }
 
 function transformChainNode (chain) {

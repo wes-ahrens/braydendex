@@ -5,6 +5,7 @@ const assert = require('chai').assert
 const expect = require('chai').expect
 const api = require('../app/api')
 const pokemonBulbasaur = require('./data/pokemon/bulbasaur')
+const speciesBulbasaur = require('./data/pokemon-species/bulbasaur')
 const speciesRalts = require('./data/pokemon-species/ralts')
 const speciesKirlia = require('./data/pokemon-species/kirlia')
 const speciesGardevoir = require('./data/pokemon-species/gardevoir')
@@ -17,6 +18,9 @@ describe('API', function () {
     pokeapi
       .get(/\/api\/v2\/pokemon\/(1|bulbasaur)\//)
       .reply(200, pokemonBulbasaur)
+    pokeapi
+      .get(/\/api\/v2\/pokemon-species\/(1|bulbasaur)\//)
+      .reply(200, speciesBulbasaur)
     pokeapi
       .get(/\/api\/v2\/pokemon-species\/(280|ralts)\//)
       .reply(200, speciesRalts)
@@ -37,7 +41,8 @@ describe('API', function () {
     it('Should return bulbasaur object', function () {
       return api.getPokemon('bulbasaur')
         .then(response => {
-          expect(response.name).to.equal('bulbasaur')
+          expect(response.name).to.equal('Bulbasaur')
+          expect(response.pokemonId).to.equal(1)
         })
     })
   })
@@ -45,7 +50,8 @@ describe('API', function () {
     it('Should return bulbasaur object', function () {
       return api.getPokemon(1)
         .then(response => {
-          expect(response.name).to.equal('bulbasaur')
+          expect(response.name).to.equal('Bulbasaur')
+          expect(response.pokemonId).to.equal(1)
         })
     })
   })
