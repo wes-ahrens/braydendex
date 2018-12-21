@@ -18,6 +18,7 @@
     "dialogflow-fulfillment": "^0.5.0",
     "express": "^4.15.2",
     "jsonpath": "^1.0.0",
+    "node-cron": "^2.0.3",
     "pokedex-promise-v2": "^3.1.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5"

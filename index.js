@@ -8,15 +8,16 @@ const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
 const api = require('./app/api')
+const cron = require('node-cron')
 
 const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
 const https = require('https')
-setInterval(function () {
+cron.schedule('*/29 7-21 * * *', function () {
   https.get('https://braydendex.herokuapp.com/status')
-}, 1200000) // every 20 minutes
+})
 
 let intentMap = new Map()
 intentMap.set('name', pokemonName)
