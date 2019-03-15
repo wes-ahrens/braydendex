@@ -3,6 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
+const { Card } = require('dialogflow-fulfillment')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -26,6 +27,7 @@ intentMap.set('colour', pokemonColour)
 intentMap.set('type', pokemonType)
 intentMap.set('evolution', pokemonEvolution)
 intentMap.set('forms', pokemonForms)
+intentMap.set('show', pokemonSprites)
 
 function pokemonName (agent) {
   return selectPokemon(agent, agent.parameters.Pokemon)
@@ -57,6 +59,25 @@ function pokemonContext (agent, pokemonObj) {
     parameters: pokemonObj
   })
   return Promise.resolve(agent)
+}
+
+function pokemonSprites (agent) {
+  console.log('Asking for sprites...')
+  const params = agent.getContext('pokemon').parameters
+  return api.getSprites(params.pokemonId)
+    .then(sprites => {
+      for (var key in sprites) {
+        if (sprites[key] != null) {
+          agent.add(new Card({
+            title: key,
+            imageUrl: sprites[key]
+          }))
+        }
+      }
+      return Promise.resolve(agent)
+    })
+    .catch(error => handleError(agent, error,
+      'Sorry, could not retrieve sprites for ' + params.name))
 }
 
 function pokemonColour (agent) {

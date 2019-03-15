@@ -14,6 +14,11 @@ exports.getColour = function (pokemonId) {
     .then(body => body.color.name)
 }
 
+exports.getSprites = function (pokemonId) {
+  return pokeapi.getPokemonByName(pokemonId)
+    .then(body => body.sprites)
+}
+
 exports.getForms = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => pokeapi.resource(body.varieties.map(value => value.pokemon.url)))
