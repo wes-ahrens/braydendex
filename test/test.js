@@ -5,6 +5,8 @@ const assert = require('chai').assert
 const expect = require('chai').expect
 const api = require('../app/api')
 const pokemonBulbasaur = require('./data/pokemon/bulbasaur')
+const pokemonRalts = require('./data/pokemon/ralts')
+const formsRalts = require('./data/pokemon-form/ralts')
 const speciesBulbasaur = require('./data/pokemon-species/bulbasaur')
 const speciesRalts = require('./data/pokemon-species/ralts')
 const speciesKirlia = require('./data/pokemon-species/kirlia')
@@ -18,6 +20,12 @@ describe('API', function () {
     pokeapi
       .get(/\/api\/v2\/pokemon\/(1|bulbasaur)\//)
       .reply(200, pokemonBulbasaur)
+    pokeapi
+      .get(/\/api\/v2\/pokemon\/(280|ralts)\//)
+      .reply(200, pokemonRalts)
+    pokeapi
+      .get('/api/v2/pokemon-form/280/')
+      .reply(200, formsRalts)
     pokeapi
       .get(/\/api\/v2\/pokemon-species\/(1|bulbasaur)\//)
       .reply(200, speciesBulbasaur)
@@ -67,6 +75,14 @@ describe('API', function () {
           console.log(response.evolution[0].evolution[1])
           expect(response.evolution[0].evolution[0].name).to.equal('Gardevoir')
           expect(response.evolution[0].evolution[1].name).to.equal('Gallade')
+        })
+    })
+  })
+  describe('forms of ralts', function () {
+    it('Should return just ralts', function () {
+      return api.getForms(280)
+        .then(response => {
+          expect(response[0]).to.equal('ralts')
         })
     })
   })
