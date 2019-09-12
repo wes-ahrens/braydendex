@@ -71,14 +71,15 @@ function pokemonSprites (agent) {
       for (var key in sprites) {
         if (sprites[key] != null) {
           console.log('Sprites: ' + key + ' = ' + sprites[key])
-          items['SELECT_'+key] = {
+          items['SELECT_' + key] = {
             title: key,
             description: 'Description',
             image: new Image(sprites[key])
           }
         }
       }
-      agent.add(new List({
+      let conv = agent.conv()
+      conv.ask(new List({
         'title': params.name,
         'items': items
       }))
