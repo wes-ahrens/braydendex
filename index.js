@@ -83,6 +83,7 @@ function pokemonSprites (agent) {
         'title': params.name,
         'items': items
       }))
+      agent.add('Here are the images for ' + params.name)
       agent.add(conv)
       return Promise.resolve(agent)
     })
