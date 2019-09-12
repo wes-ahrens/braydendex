@@ -83,7 +83,7 @@ function pokemonSprites (agent) {
       conv.ask(new List({
         'title': params.name,
         'items': {
-          'SELECT_BLAH': {
+          ['SELECT_BLAH']: {
             title: 'BLAH',
             description: 'Blah blah'
           }
