@@ -75,13 +75,9 @@ function pokemonSprites (agent) {
             description: 'Description',
             image: new Image(sprites[key])
           }
+          agent.add(new Image(sprites[key]))
         }
       }
-      agent.ask(new Carousel({
-        title: 'Pokemon',
-        items: items
-      }
-      ))
       return Promise.resolve(agent)
     })
     .catch(error => handleError(agent, error,
