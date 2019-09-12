@@ -3,7 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
-const { Carousel, Image } = require('dialogflow-fulfillment')
+const { BrowseCarousel, Image } = require('dialogflow-fulfillment')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -77,7 +77,7 @@ function pokemonSprites (agent) {
           }
         }
       }
-      agent.add(new Carousel({
+      agent.add(new BrowseCarousel({
         title: 'Pokemon',
         items: items
       }
