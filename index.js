@@ -73,10 +73,7 @@ function pokemonSprites (agent) {
           items[key] = {
             title: key,
             description: 'Description',
-            image: new Image({
-              url: sprites[key],
-              alt: 'Alternate text'
-            })
+            image: new Image(sprites[key])
           }
         }
       }
