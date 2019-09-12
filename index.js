@@ -3,7 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
-const { Card } = require('dialogflow-fulfillment')
+const { Carousel, Image } = require('dialogflow-fulfillment')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -66,14 +66,24 @@ function pokemonSprites (agent) {
   const params = agent.getContext('pokemon').parameters
   return api.getSprites(params.pokemonId)
     .then(sprites => {
+      var items = {}
       for (var key in sprites) {
         if (sprites[key] != null) {
-          agent.add(new Card({
+          items[key] = {
             title: key,
-            imageUrl: sprites[key]
-          }))
+            description: 'Description',
+            image: new Image({
+              url: sprites[key],
+              alt: 'Alternate text'
+            })
+          }
         }
       }
+      agent.add(new Carousel({
+        title: 'Pokemon',
+        items: items
+      }
+      ))
       return Promise.resolve(agent)
     })
     .catch(error => handleError(agent, error,
