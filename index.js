@@ -71,7 +71,7 @@ function pokemonSprites (agent) {
       for (var key in sprites) {
         if (sprites[key] != null) {
           console.log('Sprites: ' + key + ' = ' + sprites[key])
-          items[key] = {
+          items['SELECT_'+key] = {
             title: key,
             description: 'Description',
             image: new Image(sprites[key])
@@ -79,7 +79,7 @@ function pokemonSprites (agent) {
         }
       }
       agent.add(new List({
-        'title': 'Pokemon',
+        'title': params.name,
         'items': items
       }))
       return Promise.resolve(agent)
