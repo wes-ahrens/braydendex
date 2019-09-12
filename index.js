@@ -69,7 +69,7 @@ function pokemonSprites (agent) {
       var items = {}
       for (var key in sprites) {
         if (sprites[key] != null) {
-          console.log('Sprites: ' + sprites)
+          console.log('Sprites: ' + key + ' = ' + sprites[key])
           items[key] = {
             title: key,
             description: 'Description',
