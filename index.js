@@ -82,7 +82,12 @@ function pokemonSprites (agent) {
       conv.ask('Here are the images for ' + params.name)
       conv.ask(new List({
         'title': params.name,
-        'items': items
+        'items': {
+          'SELECT_BLAH': {
+            title: 'BLAH',
+            description: 'Blah blah'
+          }
+        }
       }))
       agent.add(conv)
       return Promise.resolve(agent)
