@@ -76,6 +76,7 @@ function pokemonSprites (agent) {
             image: new Image(sprites[key])
           }
           agent.add(new Image(sprites[key]))
+          break
         }
       }
       return Promise.resolve(agent)
