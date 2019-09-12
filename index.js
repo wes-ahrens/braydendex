@@ -79,11 +79,11 @@ function pokemonSprites (agent) {
         }
       }
       let conv = agent.conv()
+      conv.ask('Here are the images for ' + params.name)
       conv.ask(new List({
         'title': params.name,
         'items': items
       }))
-      agent.add('Here are the images for ' + params.name)
       agent.add(conv)
       return Promise.resolve(agent)
     })
