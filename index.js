@@ -83,6 +83,7 @@ function pokemonSprites (agent) {
         'title': params.name,
         'items': items
       }))
+      agent.add(conv)
       return Promise.resolve(agent)
     })
     .catch(error => handleError(agent, error,
