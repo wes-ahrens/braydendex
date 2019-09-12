@@ -3,8 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
-const { Image } = require('dialogflow-fulfillment')
-const { List } = require('actions-on-google')
+const { List, Image } = require('actions-on-google')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -74,7 +73,10 @@ function pokemonSprites (agent) {
           items['SELECT_' + key] = {
             title: key,
             description: 'Description',
-            image: new Image(sprites[key])
+            image: new Image({
+              url: sprites[key],
+              alt: 'Alt'
+            })
           }
         }
       }
@@ -83,7 +85,11 @@ function pokemonSprites (agent) {
       conv.ask(new List({
         'title': params.name,
         'items': {
-          ['SELECT_BLAH']: {
+          'SELECT_BLAH': {
+            synonyms: [
+              'BLAH',
+              'BLAHBLAH'
+            ],
             title: 'BLAH',
             description: 'Blah blah'
           }
