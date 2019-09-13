@@ -54,7 +54,7 @@ function handleError (agent, error, message) {
 
 function pokemonContext (agent, pokemonObj) {
   agent.add('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
-  agent.setContext({
+  agent.context.set({
     'name': 'pokemon',
     parameters: pokemonObj
   })
@@ -63,7 +63,7 @@ function pokemonContext (agent, pokemonObj) {
 
 function pokemonSprites (agent) {
   console.log('Asking for sprites...')
-  const params = agent.getContext('pokemon').parameters
+  const params = agent.context.get('pokemon').parameters
   return api.getSprites(params.pokemonId)
     .then(sprites => {
       var items = {}
@@ -95,7 +95,7 @@ function pokemonSprites (agent) {
 
 function pokemonColour (agent) {
   console.log('Asking for colour...')
-  const params = agent.getContext('pokemon').parameters
+  const params = agent.context.get('pokemon').parameters
   return api.getColour(params.pokemonId)
     .then(colour => {
       agent.add(params.name + ' is ' + colour)
@@ -107,7 +107,7 @@ function pokemonColour (agent) {
 
 function pokemonForms (agent) {
   console.log('Asking if other forms exist...')
-  const params = agent.getContext('pokemon').parameters
+  const params = agent.context.get('pokemon').parameters
   return api.getForms(params.pokemonId)
     .then(forms => {
       agent.add('The possible forms are ' + forms.join(' and '))
@@ -121,7 +121,7 @@ function pokemonForms (agent) {
 
 function pokemonType (agent) {
   console.log('Asking for type...')
-  const params = agent.getContext('pokemon').parameters
+  const params = agent.context.get('pokemon').parameters
   return api.getTypes(params.pokemonId)
     .then(types => {
       agent.add(params.name + ' is ' + types.join(' and ') + ' type')
@@ -131,7 +131,7 @@ function pokemonType (agent) {
 
 function pokemonEvolution (agent) {
   console.log('Asking for evolutions...')
-  const params = agent.getContext('pokemon').parameters
+  const params = agent.context.get('pokemon').parameters
   return api.getEvolutions(params.pokemonId)
     .then(function (chain) {
       agent.add(createEvolutionString(chain))
