@@ -65,17 +65,19 @@ function pokemonSprites (agent) {
   console.log('Asking for sprites...')
   const params = agent.context.get('pokemon').parameters
   return api.getSprites(params.pokemonId)
-    .then(sprites => Object.keys(sprites).reduce(function (items, key) {
-      items['SELECT_' + key] = {
-        title: key,
-        description: 'Description',
-        image: new Image({
-          url: sprites[key],
-          alt: 'Alt'
-        })
-      }
-      return items
-    }, {}))
+    .then(sprites => Object.keys(sprites)
+      .filter(key => sprites[key] != null)
+      .reduce(function (items, key) {
+        items['SELECT_' + key] = {
+          title: key,
+          description: 'Description',
+          image: new Image({
+            url: sprites[key],
+            alt: 'Alt'
+          })
+        }
+        return items
+      }, {}))
     .then(items => {
       let conv = agent.conv()
       conv.ask('Here are the images for ' + params.name)
