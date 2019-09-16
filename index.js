@@ -61,6 +61,17 @@ function pokemonContext (agent, pokemonObj) {
   return Promise.resolve(agent)
 }
 
+let spriteFriendlyNames = {
+  'back_female': 'Back View - Female',
+  'back_shiny_female': 'Back View (Shiny) - Female',
+  'back_default': 'Back View',
+  'front_female': 'Front View - Female',
+  'front_shiny_female': 'Front View (Shiny) - Female',
+  'back_shiny': 'Back View',
+  'front_default': 'Front View',
+  'front_shiny': 'Front View (Shiny)'
+}
+
 function pokemonSprites (agent) {
   console.log('Asking for sprites...')
   const params = agent.context.get('pokemon').parameters
@@ -69,11 +80,10 @@ function pokemonSprites (agent) {
       .filter(key => sprites[key] != null)
       .reduce(function (items, key) {
         items['SELECT_' + key] = {
-          title: key,
-          description: 'Description',
+          title: spriteFriendlyNames[key],
           image: new Image({
             url: sprites[key],
-            alt: 'Alt'
+            alt: 'Image of ' + params.name + ' ' + spriteFriendlyNames[key]
           })
         }
         return items
