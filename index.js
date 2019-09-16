@@ -77,7 +77,7 @@ function pokemonSprites (agent) {
   const params = agent.context.get('pokemon').parameters
   return api.getSprites(params.pokemonId)
     .then(sprites => Object.keys(sprites)
-      .sort((a, b) => sprites[a].order - sprites[b].order)
+      .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
       .filter(key => sprites[key] != null)
       .reduce(function (items, key) {
         items['SELECT_' + key] = {
