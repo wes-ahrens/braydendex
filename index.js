@@ -75,7 +75,7 @@ function pokemonSprites (agent) {
         })
       }
       return items
-    }))
+    }), {})
     .then(items => {
       let conv = agent.conv()
       conv.ask('Here are the images for ' + params.name)
