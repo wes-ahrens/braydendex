@@ -61,15 +61,15 @@ function pokemonContext (agent, pokemonObj) {
   return Promise.resolve(agent)
 }
 
-let spriteFriendlyNames = {
-  'back_female': 'Back View - Female',
-  'back_shiny_female': 'Back View (Shiny) - Female',
-  'back_default': 'Back View',
-  'front_female': 'Front View - Female',
-  'front_shiny_female': 'Front View (Shiny) - Female',
-  'back_shiny': 'Back View (Shiny)',
-  'front_default': 'Front View',
-  'front_shiny': 'Front View (Shiny)'
+let spriteMappings = {
+  'back_female': { 'friendly': 'Back View - Female', 'order': 4 },
+  'back_shiny_female': { 'friendly': 'Back View (Shiny) - Female', 'order': 8 },
+  'back_default': { 'friendly': 'Back View', 'order': 2 },
+  'front_female': { 'friendly': 'Front View - Female', 'order': 3 },
+  'front_shiny_female': { 'friendly': 'Front View (Shiny) - Female', 'order': 7 },
+  'back_shiny': { 'friendly': 'Back View (Shiny)', 'order': 6 },
+  'front_default': { 'friendly': 'Front View', 'order': 1 },
+  'front_shiny': { 'friendly': 'Front View (Shiny)', 'order': 5 }
 }
 
 function pokemonSprites (agent) {
@@ -77,13 +77,14 @@ function pokemonSprites (agent) {
   const params = agent.context.get('pokemon').parameters
   return api.getSprites(params.pokemonId)
     .then(sprites => Object.keys(sprites)
+      .sort((a, b) => sprites[a].order - sprites[b].order)
       .filter(key => sprites[key] != null)
       .reduce(function (items, key) {
         items['SELECT_' + key] = {
-          title: spriteFriendlyNames[key],
+          title: spriteMappings[key].friendly,
           image: new Image({
             url: sprites[key],
-            alt: 'Image of ' + params.name + ' ' + spriteFriendlyNames[key]
+            alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
           })
         }
         return items
