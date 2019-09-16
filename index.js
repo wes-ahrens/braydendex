@@ -67,7 +67,7 @@ let spriteFriendlyNames = {
   'back_default': 'Back View',
   'front_female': 'Front View - Female',
   'front_shiny_female': 'Front View (Shiny) - Female',
-  'back_shiny': 'Back View',
+  'back_shiny': 'Back View (Shiny)',
   'front_default': 'Front View',
   'front_shiny': 'Front View (Shiny)'
 }
