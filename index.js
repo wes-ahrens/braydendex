@@ -88,16 +88,16 @@ function pokemonSprites (agent) {
             alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
           })
         })
-      })
-      .then(items => {
-        let conv = agent.conv()
-        conv.ask('Here are the images for ' + params.name)
-        conv.ask(new BrowseCarousel({
-          items: items
-        }))
-        agent.add(conv)
-        return Promise.resolve(agent)
       }))
+    .then(items => {
+      let conv = agent.conv()
+      conv.ask('Here are the images for ' + params.name)
+      conv.ask(new BrowseCarousel({
+        items: items
+      }))
+      agent.add(conv)
+      return Promise.resolve(agent)
+    })
     .catch(error => handleError(agent, error,
       'Sorry, could not retrieve sprites for ' + params.name))
 }
