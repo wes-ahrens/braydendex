@@ -95,6 +95,7 @@ function pokemonSprites (agent) {
       conv.ask(new BrowseCarousel({
         items: items
       }))
+      conv.close('Thanks for using braydendex!')
       agent.add(conv)
       return Promise.resolve(agent)
     })
