@@ -3,7 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
-const { List, Image } = require('actions-on-google')
+const { Image, BrowseCarousel, BrowseCarouselItem } = require('actions-on-google')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -79,26 +79,25 @@ function pokemonSprites (agent) {
     .then(sprites => Object.keys(sprites)
       .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
       .filter(key => sprites[key] != null)
-      .reduce(function (items, key) {
-        items['SELECT_' + key] = {
+      .map(key => {
+        return new BrowseCarouselItem({
           title: spriteMappings[key].friendly,
+          url: sprites[key],
           image: new Image({
             url: sprites[key],
             alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
           })
-        }
-        return items
-      }, {}))
-    .then(items => {
-      let conv = agent.conv()
-      conv.ask('Here are the images for ' + params.name)
-      conv.ask(new List({
-        'title': params.name,
-        'items': items
+        })
+      })
+      .then(items => {
+        let conv = agent.conv()
+        conv.ask('Here are the images for ' + params.name)
+        conv.ask(new BrowseCarousel({
+          items: items
+        }))
+        agent.add(conv)
+        return Promise.resolve(agent)
       }))
-      agent.add(conv)
-      return Promise.resolve(agent)
-    })
     .catch(error => handleError(agent, error,
       'Sorry, could not retrieve sprites for ' + params.name))
 }
