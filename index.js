@@ -20,7 +20,7 @@ cron.schedule('*/29 7-21 * * *', function () {
   https.get('https://braydendex.herokuapp.com/status')
 })
 
-let intentMap = new Map()
+const intentMap = new Map()
 intentMap.set('name', pokemonName)
 intentMap.set('pokedex number', pokedexNumber)
 intentMap.set('colour', pokemonColour)
@@ -55,21 +55,21 @@ function handleError (agent, error, message) {
 function pokemonContext (agent, pokemonObj) {
   agent.add('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
   agent.context.set({
-    'name': 'pokemon',
+    name: 'pokemon',
     parameters: pokemonObj
   })
   return Promise.resolve(agent)
 }
 
-let spriteMappings = {
-  'back_female': { 'friendly': 'Back View - Female', 'order': 4 },
-  'back_shiny_female': { 'friendly': 'Back View (Shiny) - Female', 'order': 8 },
-  'back_default': { 'friendly': 'Back View', 'order': 2 },
-  'front_female': { 'friendly': 'Front View - Female', 'order': 3 },
-  'front_shiny_female': { 'friendly': 'Front View (Shiny) - Female', 'order': 7 },
-  'back_shiny': { 'friendly': 'Back View (Shiny)', 'order': 6 },
-  'front_default': { 'friendly': 'Front View', 'order': 1 },
-  'front_shiny': { 'friendly': 'Front View (Shiny)', 'order': 5 }
+const spriteMappings = {
+  back_female: { friendly: 'Back View - Female', order: 4 },
+  back_shiny_female: { friendly: 'Back View (Shiny) - Female', order: 8 },
+  back_default: { friendly: 'Back View', order: 2 },
+  front_female: { friendly: 'Front View - Female', order: 3 },
+  front_shiny_female: { friendly: 'Front View (Shiny) - Female', order: 7 },
+  back_shiny: { friendly: 'Back View (Shiny)', order: 6 },
+  front_default: { friendly: 'Front View', order: 1 },
+  front_shiny: { friendly: 'Front View (Shiny)', order: 5 }
 }
 
 function pokemonSprites (agent) {
@@ -90,7 +90,7 @@ function pokemonSprites (agent) {
         })
       }))
     .then(items => {
-      let conv = agent.conv()
+      const conv = agent.conv()
       conv.ask('Here are the images for ' + params.name)
       conv.ask(new BrowseCarousel({
         items: items

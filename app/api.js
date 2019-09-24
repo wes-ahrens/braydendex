@@ -1,7 +1,7 @@
 'use strict'
 
 const Pokedex = require('pokedex-promise-v2')
-const pokeapi = new Pokedex({ 'protocol': 'https' })
+const pokeapi = new Pokedex({ protocol: 'https' })
 
 exports.getPokemon = function (pokemonId) {
   return pokeapi.getPokemonByName(pokemonId)
@@ -39,8 +39,8 @@ exports.getEvolutions = function (pokemonId) {
 
 function getPokemonObject (speciesBody) {
   return {
-    'pokemonId': speciesBody.id,
-    'name': findNameForLanguage(speciesBody.names, 'en', speciesBody.name)
+    pokemonId: speciesBody.id,
+    name: findNameForLanguage(speciesBody.names, 'en', speciesBody.name)
   }
 }
 
@@ -51,9 +51,9 @@ function transformChainNode (chain) {
     .then(array => {
       var first = array.shift()
       return Promise.resolve({
-        'name': findNameForLanguage(first.names, 'en', first.name),
-        'pokemonId': first.id,
-        'evolution': array
+        name: findNameForLanguage(first.names, 'en', first.name),
+        pokemonId: first.id,
+        evolution: array
       })
     })
 }
