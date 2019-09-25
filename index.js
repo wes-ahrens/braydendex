@@ -80,6 +80,7 @@ function pokemonSprites (agent) {
       .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
       .filter(key => sprites[key] != null)
       .map(key => {
+        console.log('Found sprite ' + spriteMappings[key].friendly + ' : ' + sprites[key])
         return new BrowseCarouselItem({
           title: spriteMappings[key].friendly,
           url: sprites[key],
