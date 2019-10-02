@@ -3,4 +3,4 @@
 
 # braydendex
 
-### This is a Google Home integration project that responds to questions about pokemon.
+This is a Google Home integration project that responds to questions about pokemon.
