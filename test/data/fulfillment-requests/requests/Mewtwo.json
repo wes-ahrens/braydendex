@@ -1,0 +1,138 @@
+{
+  "responseId": "ddc9bdfb-138a-4b5f-ae5b-0e52d39e21f9-594de0a7",
+  "queryResult": {
+    "queryText": "Mewtwo",
+    "parameters": {
+      "Pokemon": "mewtwo"
+    },
+    "allRequiredParamsPresent": true,
+    "fulfillmentMessages": [
+      {
+        "text": {
+          "text": [
+            ""
+          ]
+        }
+      }
+    ],
+    "outputContexts": [
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/pokemon",
+        "lifespanCount": 5,
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/actions_capability_media_response_audio",
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/actions_capability_account_linking",
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/actions_capability_screen_output",
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/actions_capability_audio_output",
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w/contexts/google_assistant_input_type_voice",
+        "parameters": {
+          "Pokemon": "mewtwo",
+          "Pokemon.original": "Mewtwo"
+        }
+      }
+    ],
+    "intent": {
+      "name": "projects/braydendex/agent/intents/d0395ce6-8283-4649-92fe-50135777e007",
+      "displayName": "name"
+    },
+    "intentDetectionConfidence": 1,
+    "languageCode": "en"
+  },
+  "originalDetectIntentRequest": {
+    "source": "google",
+    "version": "2",
+    "payload": {
+      "user": {
+        "locale": "en-US",
+        "lastSeen": "2019-09-30T04:47:02Z",
+        "userVerificationStatus": "VERIFIED"
+      },
+      "conversation": {
+        "conversationId": "ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w",
+        "type": "ACTIVE",
+        "conversationToken": "[]"
+      },
+      "inputs": [
+        {
+          "intent": "actions.intent.TEXT",
+          "rawInputs": [
+            {
+              "inputType": "VOICE",
+              "query": "Mewtwo"
+            }
+          ],
+          "arguments": [
+            {
+              "name": "text",
+              "rawText": "Mewtwo",
+              "textValue": "Mewtwo"
+            }
+          ]
+        }
+      ],
+      "surface": {
+        "capabilities": [
+          {
+            "name": "actions.capability.MEDIA_RESPONSE_AUDIO"
+          },
+          {
+            "name": "actions.capability.ACCOUNT_LINKING"
+          },
+          {
+            "name": "actions.capability.SCREEN_OUTPUT"
+          },
+          {
+            "name": "actions.capability.AUDIO_OUTPUT"
+          }
+        ]
+      },
+      "isInSandbox": true,
+      "availableSurfaces": [
+        {
+          "capabilities": [
+            {
+              "name": "actions.capability.AUDIO_OUTPUT"
+            },
+            {
+              "name": "actions.capability.SCREEN_OUTPUT"
+            },
+            {
+              "name": "actions.capability.WEB_BROWSER"
+            }
+          ]
+        }
+      ],
+      "requestType": "SIMULATOR"
+    }
+  },
+  "session": "projects/braydendex/agent/sessions/ABwppHG387Z65Mp-cWQU7maJaLkD8SpZK6g2ObGlHuKZqJbH937wfSR_ARGQZ9ajI3pb_bnuhjdt1w"
+}

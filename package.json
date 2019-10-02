@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "mocha --exit"
+    "test": "nyc mocha --exit"
   },
   "dependencies": {
     "actions-on-google": "^2.12.0",
@@ -18,14 +18,20 @@
     "dialogflow-fulfillment": "^0.6.1",
     "express": "^4.17.1",
     "jsonpath": "^1.0.2",
-    "node-cron": "^2.0.3",
     "pokedex-promise-v2": "^3.2.0",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "sprintf-js": "^1.1.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^5.2.0",
-    "nock": "^10.0.6"
+    "chai-http": "4.2.0",
+    "mocha": "^6.1.4",
+    "nock": "^10.0.6",
+    "nyc": "^14.0.0",
+    "ava": "^1.4.1",
+    "eslint": "^4.19.1",
+    "eslint-config-google": "^0.9.1",
+    "uuid": "^3.3.2"
   }
 }

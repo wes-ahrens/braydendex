@@ -9,16 +9,10 @@ const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
 const api = require('./app/api')
-const cron = require('node-cron')
 
 const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-
-const https = require('https')
-cron.schedule('*/29 7-21 * * *', function () {
-  https.get('https://braydendex.herokuapp.com/status')
-})
 
 const intentMap = new Map()
 intentMap.set('name', pokemonName)
@@ -176,7 +170,9 @@ function createEvolutionString (node) {
 }
 
 // Webhook
-app.post('/api', function (req, res) {
+app.post('/api', handleApiRequest)
+
+function handleApiRequest (req, res) {
   console.info('POST request received')
   const agent = new WebhookClient({ request: req, response: res })
   console.log('agentVersion:' + agent.agentVersion)
@@ -191,7 +187,8 @@ app.post('/api', function (req, res) {
   console.log('session:' + agent.session)
 
   agent.handleRequest(intentMap)
-})
+}
+
 app.get('/status', function (req, res) {
   console.info('GET status request received')
   res.status(200).end()
@@ -200,3 +197,6 @@ app.get('/status', function (req, res) {
 app.listen(PORT, function () {
   console.info('Webhook listening on port ' + PORT)
 })
+
+exports.testApp = app
+exports.testApiRequest = handleApiRequest
