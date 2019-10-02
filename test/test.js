@@ -1,7 +1,6 @@
 const describe = require('mocha').describe
 const it = require('mocha').it
 const nock = require('nock')
-// const assert = require('chai').assert
 const expect = require('chai').expect
 const api = require('../app/api')
 const fs = require('fs')
@@ -23,37 +22,22 @@ chai.use(chaiHttp)
 chai.should()
 
 function getRequestJson (titleOfStaticJson) {
-  // load the static json at runtime
-  const staticJson = JSON.parse(
+  return JSON.parse(
     fs.readFileSync(
-      // this will look for a file that has the basename matching
-      // the name of the it-block. This is done to simplify code,
-      // but not neccessary. If you change this line to something
-      // else make sure it matches name of the JSON file.
-
-      // eslint-disable-next-line no-invalid-this
-      path.join(__dirname, 'data/fulfillment-requests/requests', titleOfStaticJson + '.json')
+      path.join(__dirname, 'data/fulfillment-requests', titleOfStaticJson + '.json')
     )
   )
-  return staticJson
 }
 
 describe('fulfillment', () => {
   describe('Ask for 150', () => {
     it('Should return Mewtwo', (done) => {
       chai.request(testApp)
-        .post('/api')
+        .post('/dialogflow/api')
         .send(getRequestJson('150'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.should.have.status(200)
-          res.body.should.have.property('fulfillmentText')
-          res.body.should.have.property('outputContexts')
-          res.body.outputContexts.should.be.a('array')
-          res.body.outputContexts.length.should.be.eql(1)
-          res.body.outputContexts[0].should.have.property('parameters')
-          res.body.outputContexts[0].parameters.should.have.property('pokemonId').eql(150)
-          res.body.outputContexts[0].parameters.should.have.property('name').eql('Mewtwo')
+          checkForPokemon(res, 150, 'Mewtwo')
           done()
         })
     })
@@ -61,23 +45,40 @@ describe('fulfillment', () => {
   describe('Ask for Mewtwo', () => {
     it('Should return Mewtwo', (done) => {
       chai.request(testApp)
-        .post('/api')
+        .post('/dialogflow/api')
         .send(getRequestJson('Mewtwo'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.should.have.status(200)
+          checkForPokemon(res, 150, 'Mewtwo')
+          done()
+        })
+    })
+  })
+  describe('Ask for 1000', () => {
+    it('Should return error', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('1000'))
+        .end((err, res) => {
+          expect(err).to.be.null
           res.body.should.have.property('fulfillmentText')
-          res.body.should.have.property('outputContexts')
-          res.body.outputContexts.should.be.a('array')
-          res.body.outputContexts.length.should.be.eql(1)
-          res.body.outputContexts[0].should.have.property('parameters')
-          res.body.outputContexts[0].parameters.should.have.property('pokemonId').eql(150)
-          res.body.outputContexts[0].parameters.should.have.property('name').eql('Mewtwo')
+          expect(res.body.fulfillmentText).to.equal('Sorry, I could not find pokemon with pokedex number 1000')
           done()
         })
     })
   })
 })
+
+function checkForPokemon (res, id, name) {
+  res.should.have.status(200)
+  res.body.should.have.property('fulfillmentText')
+  res.body.should.have.property('outputContexts')
+  res.body.outputContexts.should.be.a('array')
+  res.body.outputContexts.length.should.be.eql(1)
+  res.body.outputContexts[0].should.have.property('parameters')
+  res.body.outputContexts[0].parameters.should.have.property('pokemonId').eql(id)
+  res.body.outputContexts[0].parameters.should.have.property('name').eql(name)
+}
 
 const pokeapi = nock('https://pokeapi.co:443').log(console.log).persist()
 describe('api', function () {
@@ -109,6 +110,9 @@ describe('api', function () {
     pokeapi
       .get('/api/v2/evolution-chain/140/')
       .reply(200, evoRalts)
+    pokeapi
+      .get('/api/v2/pokemon/1000/')
+      .reply(404, 'Not Found')
   })
   describe('getPokemon by name', function () {
     it('Should return bulbasaur object', function () {

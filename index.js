@@ -171,6 +171,7 @@ function createEvolutionString (node) {
 
 // Webhook
 app.post('/api', handleApiRequest)
+app.post('/dialogflow/api', handleApiRequest)
 
 function handleApiRequest (req, res) {
   console.info('POST request received')

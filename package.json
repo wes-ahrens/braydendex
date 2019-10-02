@@ -10,7 +10,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "nyc mocha --exit && nyc report --reporter=text-lcov | coveralls"
+    "test": "nyc mocha --exit && nyc report --reporter=text-lcov | coveralls",
+    "local-test": "nyc mocha --exit"
   },
   "dependencies": {
     "actions-on-google": "^2.12.0",
