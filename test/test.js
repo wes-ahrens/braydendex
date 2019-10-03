@@ -16,6 +16,8 @@ const speciesGardevoir = require('./data/api/pokemon-species/gardevoir')
 const speciesGallade = require('./data/api/pokemon-species/gallade')
 const evoRalts = require('./data/api/evolution-chain/ralts')
 
+const responseMsgProperty = 'fulfillmentText'
+
 var chai = require('chai')
 var chaiHttp = require('chai-http')
 chai.use(chaiHttp)
@@ -54,6 +56,92 @@ describe('fulfillment', () => {
         })
     })
   })
+  describe('Ask for Mewtwo->type', () => {
+    it('Should return Mewtwo is psychic', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-type'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.body.should.have.property(responseMsgProperty)
+          expect(res.body[responseMsgProperty]).to.equal('Mewtwo is psychic type')
+          done()
+        })
+    })
+  })
+  describe('Ask for Mewtwo->colour', () => {
+    it('Should return Mewtwo is purple', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-colour'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.body.should.have.property(responseMsgProperty)
+          expect(res.body[responseMsgProperty]).to.equal('Mewtwo is purple')
+          done()
+        })
+    })
+  })
+  describe('Ask for Mewtwo->evolution', () => {
+    it('Should return Mewtwo does not evolve', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-evolution'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.body.should.have.property(responseMsgProperty)
+          expect(res.body[responseMsgProperty]).to.equal('Mewtwo does not evolve')
+          done()
+        })
+    })
+  })
+  describe('Ask for Mewtwo->forms', () => {
+    it('Should return Mega Mewtwo X and Mega Mewtwo Y', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-forms'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.body.should.have.property(responseMsgProperty)
+          expect(res.body[responseMsgProperty]).to.equal('The possible forms are mewtwo and Mega Mewtwo X and Mega Mewtwo Y')
+          done()
+        })
+    })
+  })
+  describe('Ask for Mewtwo->show on phone', () => {
+    it('Should return images of Mewtwo', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-show-phone'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          console.log('response: ' + JSON.stringify(res.body, null, 2))
+          res.body.should.have.property('payload')
+          res.body.payload.should.have.property('google')
+          res.body.payload.google.should.have.property('richResponse')
+          res.body.payload.google.richResponse.should.have.property('items')
+          res.body.payload.google.richResponse.items.should.be.a('array')
+          done()
+        })
+    })
+  })
+  describe('Ask for Mewtwo->show on display', () => {
+    it('Should return images of Mewtwo', (done) => {
+      chai.request(testApp)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-show-display'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          console.log('response: ' + JSON.stringify(res.body, null, 2))
+          res.body.should.have.property('payload')
+          res.body.payload.should.have.property('google')
+          res.body.payload.google.should.have.property('richResponse')
+          res.body.payload.google.richResponse.should.have.property('items')
+          res.body.payload.google.richResponse.items.should.be.a('array')
+          done()
+        })
+    })
+  })
   describe('Ask for 1000', () => {
     it('Should return error', (done) => {
       chai.request(testApp)
@@ -61,7 +149,7 @@ describe('fulfillment', () => {
         .send(getRequestJson('1000'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property('fulfillmentText')
+          res.body.should.have.property(responseMsgProperty)
           expect(res.body.fulfillmentText).to.equal('Sorry, I could not find pokemon with pokedex number 1000')
           done()
         })

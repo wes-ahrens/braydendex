@@ -3,7 +3,7 @@
 // Import the Dialogflow module from the Actions on Google client library.
 // const { dialogflow } = require('actions-on-google')
 const { WebhookClient } = require('dialogflow-fulfillment')
-const { Image, BrowseCarousel, BrowseCarouselItem } = require('actions-on-google')
+const { Image, Carousel, BrowseCarousel, BrowseCarouselItem } = require('actions-on-google')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
@@ -86,11 +86,30 @@ function pokemonSprites (agent) {
       }))
     .then(items => {
       const conv = agent.conv()
-      conv.ask('Here are the images for ' + params.name)
-      conv.ask(new BrowseCarousel({
-        items: items
-      }))
-      conv.close('Thanks for using braydendex!')
+      if (!conv.screen) {
+        conv.ask('Sorry, Cannot show images on a device without a screen')
+      } else if (conv.surface.capabilities.has('actions.capability.WEB_BROWSER')) {
+        conv.ask('Here are the images for ' + params.name)
+        conv.ask(new BrowseCarousel({
+          items: items
+        }))
+        conv.close('Thanks for using braydendex!')
+      } else {
+        const itemMap = {}
+        items.forEach(item => {
+          itemMap[item.title] = {
+            synonyms: [item.title],
+            title: item.title,
+            description: item.title,
+            image: item.image
+          }
+        })
+        conv.ask(new Carousel({
+          title: 'Here are the images for ' + params.name,
+          items: itemMap
+        }))
+        conv.close('Thanks for using braydendex!')
+      }
       agent.add(conv)
       return Promise.resolve(agent)
     })

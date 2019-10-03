@@ -1,0 +1,118 @@
+{
+  "responseId": "9969d65d-4689-4f4a-83dc-88993bd7baf7-2a4c0c5e",
+  "queryResult": {
+    "queryText": "type",
+    "parameters": {},
+    "allRequiredParamsPresent": true,
+    "fulfillmentMessages": [
+      {
+        "text": {
+          "text": [
+            ""
+          ]
+        }
+      }
+    ],
+    "outputContexts": [
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/pokemon",
+        "lifespanCount": 5,
+        "parameters": {
+          "number": 150,
+          "number.original": "150",
+          "pokemonId": 150,
+          "name": "Mewtwo"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/actions_capability_media_response_audio"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/actions_capability_account_linking"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/actions_capability_screen_output"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/actions_capability_audio_output"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g/contexts/google_assistant_input_type_voice"
+      }
+    ],
+    "intent": {
+      "name": "projects/braydendex/agent/intents/a8c225a5-3f12-43f7-9c96-4bf01302cd25",
+      "displayName": "type"
+    },
+    "intentDetectionConfidence": 1,
+    "languageCode": "en"
+  },
+  "originalDetectIntentRequest": {
+    "source": "google",
+    "version": "2",
+    "payload": {
+      "user": {
+        "locale": "en-US",
+        "lastSeen": "2019-10-03T00:02:02Z",
+        "userVerificationStatus": "VERIFIED"
+      },
+      "conversation": {
+        "conversationId": "ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g",
+        "type": "ACTIVE",
+        "conversationToken": "[\"pokemon\"]"
+      },
+      "inputs": [
+        {
+          "intent": "actions.intent.TEXT",
+          "rawInputs": [
+            {
+              "inputType": "VOICE",
+              "query": "type"
+            }
+          ],
+          "arguments": [
+            {
+              "name": "text",
+              "rawText": "type",
+              "textValue": "type"
+            }
+          ]
+        }
+      ],
+      "surface": {
+        "capabilities": [
+          {
+            "name": "actions.capability.MEDIA_RESPONSE_AUDIO"
+          },
+          {
+            "name": "actions.capability.ACCOUNT_LINKING"
+          },
+          {
+            "name": "actions.capability.SCREEN_OUTPUT"
+          },
+          {
+            "name": "actions.capability.AUDIO_OUTPUT"
+          }
+        ]
+      },
+      "isInSandbox": true,
+      "availableSurfaces": [
+        {
+          "capabilities": [
+            {
+              "name": "actions.capability.SCREEN_OUTPUT"
+            },
+            {
+              "name": "actions.capability.WEB_BROWSER"
+            },
+            {
+              "name": "actions.capability.AUDIO_OUTPUT"
+            }
+          ]
+        }
+      ],
+      "requestType": "SIMULATOR"
+    }
+  },
+  "session": "projects/braydendex/agent/sessions/ABwppHFzIbkWLLhNNd9v2cStmtzjypxxZ7CIld3LWo2DEEwZMkbbXbsW_mo5P6rvWpAJK28dK1Ik4g"
+}
