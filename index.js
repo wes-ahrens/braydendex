@@ -108,7 +108,7 @@ function pokemonSprites (conv) {
       if (!conv.screen) {
         conv.ask('Sorry, Cannot show images on a device without a screen')
       } else if (conv.surface.capabilities.has('actions.capability.WEB_BROWSER')) {
-        conv.ask('Here are the images for ' + params.name)
+        conv.ask(params.name + ' images')
         conv.ask(new BrowseCarousel({
           items: items
         }))
@@ -122,8 +122,9 @@ function pokemonSprites (conv) {
             image: item.image
           }
         })
+        conv.ask(params.name + ' images')
         conv.ask(new List({
-          title: 'Here are the images for ' + params.name,
+          title: params.name,
           items: itemMap
         }))
       }
