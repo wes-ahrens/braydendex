@@ -41,6 +41,7 @@ app.intent('evolution', pokemonEvolution)
 app.intent('forms', pokemonForms)
 app.intent('show', pokemonSprites)
 app.intent('option', option)
+app.intent('actions.intent.OPTION', option)
 
 function option (conv, params, option) {
   conv.ask('You selected option ' + option)
