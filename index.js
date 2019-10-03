@@ -1,58 +1,73 @@
 'use strict'
 
-// Import the Dialogflow module from the Actions on Google client library.
-// const { dialogflow } = require('actions-on-google')
-const { WebhookClient } = require('dialogflow-fulfillment')
-const { Image, Carousel, BrowseCarousel, BrowseCarouselItem } = require('actions-on-google')
+const {
+  dialogflow,
+  Image,
+  List,
+  BrowseCarousel,
+  BrowseCarouselItem
+} = require('actions-on-google')
 
 const PORT = process.env.PORT || 8080
 const express = require('express')
 const bodyParser = require('body-parser')
 const api = require('./app/api')
 
-const app = express()
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: true }))
+const app = dialogflow({ debug: true })
+app.middleware((conv) => {
+  conv.hasScreen =
+    conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT')
+  conv.hasAudioPlayback =
+    conv.surface.capabilities.has('actions.capability.AUDIO_OUTPUT')
+  conv.hasWebBrowser =
+    conv.surface.capabilities.has('actions.capability.WEB_BROWSER')
 
-const intentMap = new Map()
-intentMap.set('name', pokemonName)
-intentMap.set('pokedex number', pokedexNumber)
-intentMap.set('colour', pokemonColour)
-intentMap.set('type', pokemonType)
-intentMap.set('evolution', pokemonEvolution)
-intentMap.set('forms', pokemonForms)
-intentMap.set('show', pokemonSprites)
+  // All require this surface capability check except for media responses
+  if (!conv.hasScreen && (conv.intent !== 'media response' || 'media status')) {
+    conv.ask('Hi there! Sorry, I\'m afraid you\'ll have to switch to a ' +
+      'screen device or select the phone surface in the simulator.')
+  }
+})
 
-function pokemonName (agent) {
-  return selectPokemon(agent, agent.parameters.Pokemon)
-    .catch(error => handleError(agent, error,
-      'Sorry, I could not find pokemon ' + agent.parameters.Pokemon))
+const server = express()
+server.use(bodyParser.json())
+server.use(bodyParser.urlencoded({ extended: true }))
+
+app.intent('name', pokemonName)
+app.intent('pokedex number', pokedexNumber)
+app.intent('colour', pokemonColour)
+app.intent('type', pokemonType)
+app.intent('evolution', pokemonEvolution)
+app.intent('forms', pokemonForms)
+app.intent('show', pokemonSprites)
+
+function pokemonName (conv, params) {
+  return selectPokemon(conv, params.Pokemon)
+    .catch(error => handleError(conv, error,
+      'Sorry, I could not find pokemon ' + params.Pokemon))
 }
 
-function pokedexNumber (agent) {
-  return selectPokemon(agent, agent.parameters.number)
-    .catch(error => handleError(agent, error,
-      'Sorry, I could not find pokemon with pokedex number ' + agent.parameters.number))
+function pokedexNumber (conv, params) {
+  return selectPokemon(conv, params.number)
+    .catch(error => handleError(conv, error,
+      'Sorry, I could not find pokemon with pokedex number ' + params.number))
 }
 
-function selectPokemon (agent, pokemonId) {
+function selectPokemon (conv, pokemonId) {
   return api.getPokemon(pokemonId)
-    .then(pokemonObj => pokemonContext(agent, pokemonObj))
+    .then(pokemonObj => pokemonContexts(conv, pokemonObj))
 }
 
-function handleError (agent, error, message) {
+function handleError (conv, error, message) {
   console.log(error)
-  agent.add(message)
-  return Promise.resolve(agent)
+  conv.ask(message)
+  return Promise.resolve(conv)
 }
 
-function pokemonContext (agent, pokemonObj) {
-  agent.add('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
-  agent.context.set({
-    name: 'pokemon',
-    parameters: pokemonObj
-  })
-  return Promise.resolve(agent)
+function pokemonContexts (conv, pokemonObj) {
+  conv.ask('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
+  conv.contexts.set('pokemon', 5, pokemonObj)
+  return Promise.resolve(conv)
 }
 
 const spriteMappings = {
@@ -66,9 +81,9 @@ const spriteMappings = {
   front_shiny: { friendly: 'Front View (Shiny)', order: 5 }
 }
 
-function pokemonSprites (agent) {
+function pokemonSprites (conv) {
   console.log('Asking for sprites...')
-  const params = agent.context.get('pokemon').parameters
+  const params = conv.contexts.get('pokemon').parameters
   return api.getSprites(params.pokemonId)
     .then(sprites => Object.keys(sprites)
       .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
@@ -85,7 +100,6 @@ function pokemonSprites (agent) {
         })
       }))
     .then(items => {
-      const conv = agent.conv()
       if (!conv.screen) {
         conv.ask('Sorry, Cannot show images on a device without a screen')
       } else if (conv.surface.capabilities.has('actions.capability.WEB_BROWSER')) {
@@ -104,62 +118,61 @@ function pokemonSprites (agent) {
             image: item.image
           }
         })
-        conv.ask(new Carousel({
+        conv.ask(new List({
           title: 'Here are the images for ' + params.name,
           items: itemMap
         }))
         conv.close('Thanks for using braydendex!')
       }
-      agent.add(conv)
-      return Promise.resolve(agent)
+      return Promise.resolve(conv)
     })
-    .catch(error => handleError(agent, error,
+    .catch(error => handleError(conv, error,
       'Sorry, could not retrieve sprites for ' + params.name))
 }
 
-function pokemonColour (agent) {
+function pokemonColour (conv) {
   console.log('Asking for colour...')
-  const params = agent.context.get('pokemon').parameters
+  const params = conv.contexts.get('pokemon').parameters
   return api.getColour(params.pokemonId)
     .then(colour => {
-      agent.add(params.name + ' is ' + colour)
-      return Promise.resolve(agent)
+      conv.ask(params.name + ' is ' + colour)
+      return Promise.resolve(conv)
     })
-    .catch(error => handleError(agent, error,
+    .catch(error => handleError(conv, error,
       'Sorry, could not retrieve colour for ' + params.name))
 }
 
-function pokemonForms (agent) {
+function pokemonForms (conv) {
   console.log('Asking if other forms exist...')
-  const params = agent.context.get('pokemon').parameters
+  const params = conv.contexts.get('pokemon').parameters
   return api.getForms(params.pokemonId)
     .then(forms => {
-      agent.add('The possible forms are ' + forms.join(' and '))
-      return Promise.resolve(agent)
+      conv.ask('The possible forms are ' + forms.join(' and '))
+      return Promise.resolve(conv)
     })
     .catch(function (error) {
-      agent.add(error)
-      return Promise.resolve(agent)
+      conv.ask(error)
+      return Promise.resolve(conv)
     })
 }
 
-function pokemonType (agent) {
+function pokemonType (conv) {
   console.log('Asking for type...')
-  const params = agent.context.get('pokemon').parameters
+  const params = conv.contexts.get('pokemon').parameters
   return api.getTypes(params.pokemonId)
     .then(types => {
-      agent.add(params.name + ' is ' + types.join(' and ') + ' type')
-      return Promise.resolve(agent)
+      conv.ask(params.name + ' is ' + types.join(' and ') + ' type')
+      return Promise.resolve(conv)
     })
 }
 
-function pokemonEvolution (agent) {
+function pokemonEvolution (conv) {
   console.log('Asking for evolutions...')
-  const params = agent.context.get('pokemon').parameters
+  const params = conv.contexts.get('pokemon').parameters
   return api.getEvolutions(params.pokemonId)
     .then(function (chain) {
-      agent.add(createEvolutionString(chain))
-      return Promise.resolve(agent)
+      conv.ask(createEvolutionString(chain))
+      return Promise.resolve(conv)
     })
 }
 
@@ -189,34 +202,16 @@ function createEvolutionString (node) {
 }
 
 // Webhook
-app.post('/api', handleApiRequest)
-app.post('/dialogflow/api', handleApiRequest)
+server.post('/api', app)
+server.post('/dialogflow/api', app)
 
-function handleApiRequest (req, res) {
-  console.info('POST request received')
-  const agent = new WebhookClient({ request: req, response: res })
-  console.log('agentVersion:' + agent.agentVersion)
-  console.log('intent:' + agent.intent)
-  console.log('action:' + agent.action)
-  console.log('parameters:')
-  console.log(agent.parameters)
-  console.log('contexts:')
-  console.log(agent.contexts)
-  console.log('requestSource:' + agent.requestSource)
-  console.log('query:' + agent.query)
-  console.log('session:' + agent.session)
-
-  agent.handleRequest(intentMap)
-}
-
-app.get('/status', function (req, res) {
+server.get('/status', function (req, res) {
   console.info('GET status request received')
   res.status(200).end()
 })
 
-app.listen(PORT, function () {
+server.listen(PORT, function () {
   console.info('Webhook listening on port ' + PORT)
 })
 
-exports.testApp = app
-exports.testApiRequest = handleApiRequest
+exports.testServer = server

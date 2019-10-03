@@ -5,7 +5,7 @@ const expect = require('chai').expect
 const api = require('../app/api')
 const fs = require('fs')
 const path = require('path')
-const { testApp } = require('./../index')
+const { testServer } = require('./../index')
 const pokemonBulbasaur = require('./data/api/pokemon/bulbasaur')
 const pokemonRalts = require('./data/api/pokemon/ralts')
 const formsRalts = require('./data/api/pokemon-form/ralts')
@@ -15,8 +15,6 @@ const speciesKirlia = require('./data/api/pokemon-species/kirlia')
 const speciesGardevoir = require('./data/api/pokemon-species/gardevoir')
 const speciesGallade = require('./data/api/pokemon-species/gallade')
 const evoRalts = require('./data/api/evolution-chain/ralts')
-
-const responseMsgProperty = 'fulfillmentText'
 
 var chai = require('chai')
 var chaiHttp = require('chai-http')
@@ -34,11 +32,12 @@ function getRequestJson (titleOfStaticJson) {
 describe('fulfillment', () => {
   describe('Ask for 150', () => {
     it('Should return Mewtwo', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150'))
         .end((err, res) => {
           expect(err).to.be.null
+          res.should.have.status(200)
           checkForPokemon(res, 150, 'Mewtwo')
           done()
         })
@@ -46,11 +45,13 @@ describe('fulfillment', () => {
   })
   describe('Ask for Mewtwo', () => {
     it('Should return Mewtwo', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('Mewtwo'))
         .end((err, res) => {
           expect(err).to.be.null
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Pokemon Mewtwo is pokedex number 150')
           checkForPokemon(res, 150, 'Mewtwo')
           done()
         })
@@ -58,64 +59,64 @@ describe('fulfillment', () => {
   })
   describe('Ask for Mewtwo->type', () => {
     it('Should return Mewtwo is psychic', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-type'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property(responseMsgProperty)
-          expect(res.body[responseMsgProperty]).to.equal('Mewtwo is psychic type')
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Mewtwo is psychic type')
           done()
         })
     })
   })
   describe('Ask for Mewtwo->colour', () => {
     it('Should return Mewtwo is purple', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-colour'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property(responseMsgProperty)
-          expect(res.body[responseMsgProperty]).to.equal('Mewtwo is purple')
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Mewtwo is purple')
           done()
         })
     })
   })
   describe('Ask for Mewtwo->evolution', () => {
     it('Should return Mewtwo does not evolve', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-evolution'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property(responseMsgProperty)
-          expect(res.body[responseMsgProperty]).to.equal('Mewtwo does not evolve')
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Mewtwo does not evolve')
           done()
         })
     })
   })
   describe('Ask for Mewtwo->forms', () => {
     it('Should return Mega Mewtwo X and Mega Mewtwo Y', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-forms'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property(responseMsgProperty)
-          expect(res.body[responseMsgProperty]).to.equal('The possible forms are mewtwo and Mega Mewtwo X and Mega Mewtwo Y')
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'The possible forms are mewtwo and Mega Mewtwo X and Mega Mewtwo Y')
           done()
         })
     })
   })
   describe('Ask for Mewtwo->show on phone', () => {
     it('Should return images of Mewtwo', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-show-phone'))
         .end((err, res) => {
           expect(err).to.be.null
-          console.log('response: ' + JSON.stringify(res.body, null, 2))
+          res.should.have.status(200)
           res.body.should.have.property('payload')
           res.body.payload.should.have.property('google')
           res.body.payload.google.should.have.property('richResponse')
@@ -127,12 +128,12 @@ describe('fulfillment', () => {
   })
   describe('Ask for Mewtwo->show on display', () => {
     it('Should return images of Mewtwo', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('150-show-display'))
         .end((err, res) => {
           expect(err).to.be.null
-          console.log('response: ' + JSON.stringify(res.body, null, 2))
+          res.should.have.status(200)
           res.body.should.have.property('payload')
           res.body.payload.should.have.property('google')
           res.body.payload.google.should.have.property('richResponse')
@@ -144,24 +145,32 @@ describe('fulfillment', () => {
   })
   describe('Ask for 1000', () => {
     it('Should return error', (done) => {
-      chai.request(testApp)
+      chai.request(testServer)
         .post('/dialogflow/api')
         .send(getRequestJson('1000'))
         .end((err, res) => {
           expect(err).to.be.null
-          res.body.should.have.property(responseMsgProperty)
-          expect(res.body.fulfillmentText).to.equal('Sorry, I could not find pokemon with pokedex number 1000')
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Sorry, I could not find pokemon with pokedex number 1000')
           done()
         })
     })
   })
 })
 
+function checkTextToSpeech (res, string) {
+  res.body.should.have.property('payload')
+  res.body.payload.should.have.property('google')
+  res.body.payload.google.should.have.property('richResponse')
+  res.body.payload.google.richResponse.should.have.property('items')
+  res.body.payload.google.richResponse.items.length.should.be.eql(1)
+  res.body.payload.google.richResponse.items[0].should.have.property('simpleResponse')
+  res.body.payload.google.richResponse.items[0].simpleResponse.should.have.property('textToSpeech')
+  res.body.payload.google.richResponse.items[0].simpleResponse.textToSpeech.should.be.eql(string)
+}
+
 function checkForPokemon (res, id, name) {
-  res.should.have.status(200)
-  res.body.should.have.property('fulfillmentText')
   res.body.should.have.property('outputContexts')
-  res.body.outputContexts.should.be.a('array')
   res.body.outputContexts.length.should.be.eql(1)
   res.body.outputContexts[0].should.have.property('parameters')
   res.body.outputContexts[0].parameters.should.have.property('pokemonId').eql(id)
