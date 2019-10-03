@@ -112,7 +112,6 @@ function pokemonSprites (conv) {
         conv.ask(new BrowseCarousel({
           items: items
         }))
-        conv.close('Thanks for using braydendex!')
       } else {
         const itemMap = {}
         items.forEach(item => {
@@ -127,7 +126,6 @@ function pokemonSprites (conv) {
           title: 'Here are the images for ' + params.name,
           items: itemMap
         }))
-        conv.close('Thanks for using braydendex!')
       }
       return Promise.resolve(conv)
     })
