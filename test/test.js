@@ -143,6 +143,18 @@ describe('fulfillment', () => {
         })
     })
   })
+  describe('Ask for Mewtwo->show on display->select', () => {
+    it('Should return images of Mewtwo', (done) => {
+      chai.request(testServer)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-show-display-select'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.should.have.status(200)
+          done()
+        })
+    })
+  })
   describe('Ask for 1000', () => {
     it('Should return error', (done) => {
       chai.request(testServer)

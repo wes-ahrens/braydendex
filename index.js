@@ -3,6 +3,8 @@
 const {
   dialogflow,
   Image,
+  BasicCard,
+  Button,
   List,
   BrowseCarousel,
   BrowseCarouselItem
@@ -40,11 +42,22 @@ app.intent('type', pokemonType)
 app.intent('evolution', pokemonEvolution)
 app.intent('forms', pokemonForms)
 app.intent('show', pokemonSprites)
-app.intent('show-selection', option)
-app.intent('actions.intent.OPTION', option)
+app.intent('show-selection', spritesOption)
 
-function option (conv, params, option) {
-  conv.ask('You selected option ' + option)
+function spritesOption (conv, params, option) {
+  conv.ask(new BasicCard({
+    text: params.pokemon,
+    title: params.pokemon,
+    buttons: new Button({
+      title: 'View on pokemondb.net',
+      url: 'https://pokemondb.net/pokedex/' + params.pokemonId
+    }),
+    image: new Image({
+      url: option,
+      alt: params.pokemon
+    })
+  }))
+  conv.close('Thanks for using braydendex')
   Promise.resolve(conv)
 }
 
@@ -99,7 +112,7 @@ function pokemonSprites (conv) {
         console.log('Found sprite ' + spriteMappings[key].friendly + ' : ' + sprites[key])
         return new BrowseCarouselItem({
           title: spriteMappings[key].friendly,
-          url: sprites[key],
+          url: 'https://pokemondb.net/pokedex/' + params.pokemonId,
           image: new Image({
             url: sprites[key],
             alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
@@ -117,7 +130,7 @@ function pokemonSprites (conv) {
       } else {
         const itemMap = {}
         items.forEach(item => {
-          itemMap[item.title] = {
+          itemMap[item.image.url] = {
             synonyms: [item.title],
             title: item.title,
             description: item.title,
