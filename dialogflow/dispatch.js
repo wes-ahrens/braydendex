@@ -1,0 +1,94 @@
+'use strict'
+
+const { dialogflow } = require('actions-on-google')
+const api = require('../app/api')
+const { handleError } = require('./util')
+const { pokemonSprites, spritesOption } = require('./sprites')
+const { pokemonEvolution } = require('./evolution')
+
+const app = dialogflow({ debug: true })
+app.middleware((conv) => {
+  conv.hasScreen =
+    conv.surface.capabilities.has('actions.capability.SCREEN_OUTPUT')
+  conv.hasAudioPlayback =
+    conv.surface.capabilities.has('actions.capability.AUDIO_OUTPUT')
+  conv.hasWebBrowser =
+    conv.surface.capabilities.has('actions.capability.WEB_BROWSER')
+
+  // All require this surface capability check except for media responses
+  if (!conv.hasScreen && (conv.intent !== 'media response' || 'media status')) {
+    conv.ask('Hi there! Sorry, I\'m afraid you\'ll have to switch to a ' +
+      'screen device or select the phone surface in the simulator.')
+  }
+})
+
+// Intents
+app.intent('name', pokemonName)
+app.intent('pokedex number', pokedexNumber)
+app.intent('colour', pokemonColour)
+app.intent('type', pokemonType)
+app.intent('evolution', pokemonEvolution)
+app.intent('forms', pokemonForms)
+app.intent('show', pokemonSprites)
+app.intent('show-selection', spritesOption)
+
+function pokemonName (conv, params) {
+  return selectPokemon(conv, params.Pokemon)
+    .catch(error => handleError(conv, error,
+      'Sorry, I could not find pokemon ' + params.Pokemon))
+}
+
+function pokedexNumber (conv, params) {
+  return selectPokemon(conv, params.number)
+    .catch(error => handleError(conv, error,
+      'Sorry, I could not find pokemon with pokedex number ' + params.number))
+}
+
+function selectPokemon (conv, pokemonId) {
+  return api.getPokemon(pokemonId)
+    .then(pokemonObj => pokemonContexts(conv, pokemonObj))
+}
+
+function pokemonContexts (conv, pokemonObj) {
+  conv.ask('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
+  conv.contexts.set('pokemon', 5, pokemonObj)
+  return Promise.resolve(conv)
+}
+
+function pokemonColour (conv) {
+  console.log('Asking for colour...')
+  const params = conv.contexts.get('pokemon').parameters
+  return api.getColour(params.pokemonId)
+    .then(colour => {
+      conv.ask(params.name + ' is ' + colour)
+      return Promise.resolve(conv)
+    })
+    .catch(error => handleError(conv, error,
+      'Sorry, could not retrieve colour for ' + params.name))
+}
+
+function pokemonForms (conv) {
+  console.log('Asking if other forms exist...')
+  const params = conv.contexts.get('pokemon').parameters
+  return api.getForms(params.pokemonId)
+    .then(forms => {
+      conv.ask('The possible forms are ' + forms.join(' and '))
+      return Promise.resolve(conv)
+    })
+    .catch(function (error) {
+      conv.ask(error)
+      return Promise.resolve(conv)
+    })
+}
+
+function pokemonType (conv) {
+  console.log('Asking for type...')
+  const params = conv.contexts.get('pokemon').parameters
+  return api.getTypes(params.pokemonId)
+    .then(types => {
+      conv.ask(params.name + ' is ' + types.join(' and ') + ' type')
+      return Promise.resolve(conv)
+    })
+}
+
+exports.dialogflow = app
