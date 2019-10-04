@@ -44,17 +44,19 @@ app.intent('show-selection', spritesOption)
 
 function spritesOption (conv, params, option) {
   const ctxParams = conv.contexts.get('pokemon').parameters
+  const imgText = conv.contexts.get('actions_intent_option').parameters.text
   conv.ask('Summary of ' + ctxParams.name)
   conv.ask(new BasicCard({
     title: 'Name: ' + ctxParams.name,
     subtitle: 'Pokedex: ' + ctxParams.pokemonId,
+    text: ctxParams.name + ' ' + imgText,
     buttons: new Button({
       title: 'View on pokemondb',
       url: 'https://pokemondb.net/pokedex/' + ctxParams.pokemonId
     }),
     image: new Image({
       url: option,
-      alt: ctxParams.name
+      alt: ctxParams.name + ' ' + imgText
     }),
     display: 'CROPPED'
   }))
