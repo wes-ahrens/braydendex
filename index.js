@@ -8,6 +8,7 @@ const { dialogflow } = require('./dialogflow/dispatch')
 const server = express()
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
+server.use(express.static('public'))
 
 // Webhook
 server.post('/api', dialogflow)
