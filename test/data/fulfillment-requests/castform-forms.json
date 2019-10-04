@@ -1,0 +1,118 @@
+{
+  "responseId": "8972e1e3-37a4-45ec-b337-ac25cc79bba6-2a4c0c5e",
+  "queryResult": {
+    "queryText": "forms",
+    "parameters": {},
+    "allRequiredParamsPresent": true,
+    "fulfillmentMessages": [
+      {
+        "text": {
+          "text": [
+            ""
+          ]
+        }
+      }
+    ],
+    "outputContexts": [
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/pokemon",
+        "lifespanCount": 5,
+        "parameters": {
+          "Pokemon": "castform",
+          "Pokemon.original": "castform",
+          "pokemonId": 351,
+          "name": "Castform"
+        }
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/actions_capability_media_response_audio"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/actions_capability_audio_output"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/actions_capability_account_linking"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/actions_capability_screen_output"
+      },
+      {
+        "name": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ/contexts/google_assistant_input_type_voice"
+      }
+    ],
+    "intent": {
+      "name": "projects/braydendex/agent/intents/b95c1653-6eae-403b-b3a0-55f7e390e46e",
+      "displayName": "forms"
+    },
+    "intentDetectionConfidence": 1,
+    "languageCode": "en"
+  },
+  "originalDetectIntentRequest": {
+    "source": "google",
+    "version": "2",
+    "payload": {
+      "user": {
+        "locale": "en-US",
+        "lastSeen": "2019-10-04T01:57:32Z",
+        "userVerificationStatus": "VERIFIED"
+      },
+      "conversation": {
+        "conversationId": "ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ",
+        "type": "ACTIVE",
+        "conversationToken": "[\"pokemon\"]"
+      },
+      "inputs": [
+        {
+          "intent": "actions.intent.TEXT",
+          "rawInputs": [
+            {
+              "inputType": "VOICE",
+              "query": "forms"
+            }
+          ],
+          "arguments": [
+            {
+              "name": "text",
+              "rawText": "forms",
+              "textValue": "forms"
+            }
+          ]
+        }
+      ],
+      "surface": {
+        "capabilities": [
+          {
+            "name": "actions.capability.MEDIA_RESPONSE_AUDIO"
+          },
+          {
+            "name": "actions.capability.AUDIO_OUTPUT"
+          },
+          {
+            "name": "actions.capability.ACCOUNT_LINKING"
+          },
+          {
+            "name": "actions.capability.SCREEN_OUTPUT"
+          }
+        ]
+      },
+      "isInSandbox": true,
+      "availableSurfaces": [
+        {
+          "capabilities": [
+            {
+              "name": "actions.capability.SCREEN_OUTPUT"
+            },
+            {
+              "name": "actions.capability.AUDIO_OUTPUT"
+            },
+            {
+              "name": "actions.capability.WEB_BROWSER"
+            }
+          ]
+        }
+      ],
+      "requestType": "SIMULATOR"
+    }
+  },
+  "session": "projects/braydendex/agent/sessions/ABwppHFtgl2a0EjtjUXkUy5vHpSwVRP0Y8p7ruuc9wyWmFlXSw0BZ9BoloWKY3wgOurfx4i-UgN7eQ"
+}

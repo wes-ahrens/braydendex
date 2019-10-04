@@ -155,6 +155,32 @@ describe('fulfillment', () => {
         })
     })
   })
+  describe('Ask for Castform->Forms', () => {
+    it('Should return forms of Castform', (done) => {
+      chai.request(testServer)
+        .post('/dialogflow/api')
+        .send(getRequestJson('castform-forms'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'The possible forms are castform and Sunny Castform and Rainy Castform and Snowy Castform')
+          done()
+        })
+    })
+  })
+  describe('Ask for Ralts->Evolution', () => {
+    it('Should return evolutions of Ralts', (done) => {
+      chai.request(testServer)
+        .post('/dialogflow/api')
+        .send(getRequestJson('ralts-evolution'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'Ralts evolves to Kirlia. Kirlia evolves to Gardevoir or Gallade. ')
+          done()
+        })
+    })
+  })
   describe('Ask for 1000', () => {
     it('Should return error', (done) => {
       chai.request(testServer)
