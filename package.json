@@ -1,5 +1,5 @@
 {
-  "name": "braydendex-fulfillment",
+  "name": "braydendex",
   "description": "This is the fulfillment for the braydendex google action",
   "version": "0.0.1",
   "private": true,
