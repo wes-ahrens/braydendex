@@ -118,19 +118,11 @@ function pokemonSprites (conv) {
           })
         }
       }))
-    .then(items => {
+    .then(items => spriteListItems(items))
+    .then(itemMap => {
       if (!conv.screen) {
         conv.ask('Sorry, Cannot show images on a device without a screen')
       } else {
-        const itemMap = {}
-        items.forEach(item => {
-          itemMap[item.image.url] = {
-            synonyms: [item.friendly],
-            title: item.friendly,
-            description: item.friendly,
-            image: item.image
-          }
-        })
         conv.ask(params.name + ' images')
         conv.ask(new List({
           title: params.name,
@@ -141,6 +133,19 @@ function pokemonSprites (conv) {
     })
     .catch(error => handleError(conv, error,
       'Sorry, could not retrieve sprites for ' + params.name))
+}
+
+function spriteListItems (items) {
+  const itemMap = {}
+  items.forEach(item => {
+    itemMap[item.image.url] = {
+      synonyms: [item.friendly],
+      title: item.friendly,
+      description: item.friendly,
+      image: item.image
+    }
+  })
+  return itemMap
 }
 
 function pokemonColour (conv) {
