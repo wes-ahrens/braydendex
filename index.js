@@ -45,6 +45,7 @@ app.intent('show', pokemonSprites)
 app.intent('show-selection', spritesOption)
 
 function spritesOption (conv, params, option) {
+  conv.ask('Summary of ' + params.pokemon)
   conv.ask(new BasicCard({
     text: params.pokemon,
     title: params.pokemon,
