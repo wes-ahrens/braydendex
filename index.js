@@ -5,9 +5,7 @@ const {
   Image,
   BasicCard,
   Button,
-  List,
-  BrowseCarousel,
-  BrowseCarouselItem
+  List
 } = require('actions-on-google')
 
 const PORT = process.env.PORT || 8080
@@ -112,30 +110,24 @@ function pokemonSprites (conv) {
       .filter(key => sprites[key] != null)
       .map(key => {
         console.log('Found sprite ' + spriteMappings[key].friendly + ' : ' + sprites[key])
-        return new BrowseCarouselItem({
-          title: spriteMappings[key].friendly,
-          url: 'https://pokemondb.net/pokedex/' + params.pokemonId,
+        return {
+          friendly: spriteMappings[key].friendly,
           image: new Image({
             url: sprites[key],
             alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
           })
-        })
+        }
       }))
     .then(items => {
       if (!conv.screen) {
         conv.ask('Sorry, Cannot show images on a device without a screen')
-      } else if (conv.surface.capabilities.has('actions.capability.WEB_BROWSER')) {
-        conv.ask(params.name + ' images')
-        conv.ask(new BrowseCarousel({
-          items: items
-        }))
       } else {
         const itemMap = {}
         items.forEach(item => {
           itemMap[item.image.url] = {
-            synonyms: [item.title],
-            title: item.title,
-            description: item.title,
+            synonyms: [item.friendly],
+            title: item.friendly,
+            description: item.friendly,
             image: item.image
           }
         })
