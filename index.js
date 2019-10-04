@@ -45,17 +45,18 @@ app.intent('show', pokemonSprites)
 app.intent('show-selection', spritesOption)
 
 function spritesOption (conv, params, option) {
-  conv.ask('Summary of ' + params.pokemon)
+  const ctxParams = conv.contexts.get('pokemon').parameters
+  conv.ask('Summary of ' + ctxParams.name)
   conv.ask(new BasicCard({
-    text: params.pokemon,
-    title: params.pokemon,
+    text: ctxParams.name,
+    title: ctxParams.name,
     buttons: new Button({
       title: 'View on pokemondb.net',
-      url: 'https://pokemondb.net/pokedex/' + params.pokemonId
+      url: 'https://pokemondb.net/pokedex/' + ctxParams.pokemonId
     }),
     image: new Image({
       url: option,
-      alt: params.pokemon
+      alt: ctxParams.name
     })
   }))
   conv.close('Thanks for using braydendex')
