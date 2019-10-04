@@ -48,18 +48,18 @@ function spritesOption (conv, params, option) {
   const ctxParams = conv.contexts.get('pokemon').parameters
   conv.ask('Summary of ' + ctxParams.name)
   conv.ask(new BasicCard({
-    text: ctxParams.name,
     title: ctxParams.name,
+    subtitle: ctxParams.pokemonId,
     buttons: new Button({
-      title: 'View on pokemondb.net',
+      title: 'View on pokemondb',
       url: 'https://pokemondb.net/pokedex/' + ctxParams.pokemonId
     }),
     image: new Image({
       url: option,
       alt: ctxParams.name
-    })
+    }),
+    display: 'CROPPED'
   }))
-  conv.close('Thanks for using braydendex')
   Promise.resolve(conv)
 }
 
