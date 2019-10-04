@@ -46,8 +46,8 @@ function spritesOption (conv, params, option) {
   const ctxParams = conv.contexts.get('pokemon').parameters
   conv.ask('Summary of ' + ctxParams.name)
   conv.ask(new BasicCard({
-    title: ctxParams.name,
-    subtitle: ctxParams.pokemonId,
+    title: 'Name: ' + ctxParams.name,
+    subtitle: 'Pokedex: ' + ctxParams.pokemonId,
     buttons: new Button({
       title: 'View on pokemondb',
       url: 'https://pokemondb.net/pokedex/' + ctxParams.pokemonId
