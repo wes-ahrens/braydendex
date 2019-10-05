@@ -21,11 +21,11 @@ nunjucks.configure(templatePath, {
 server.post('/api', dialogflow)
 server.post('/dialogflow/api', dialogflow)
 
-server.get('/index.html', (req, res) => {
+server.get('/', (req, res) => {
   return res.render('index.html')
 })
 
-server.get('/about.html', (req, res) => {
+server.get('/about', (req, res) => {
   return res.render('about.html')
 })
 
