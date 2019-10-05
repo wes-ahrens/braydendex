@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/external/materialize.min.css"  media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper">
+        <a href="#" data-target="mobile-sidebar" class="sidenav-trigger show-on-large"><i class="material-icons">menu</i></a>
+        <a href="#!" class="brand-logo">Brayden Dex</a>
+        <ul class="right hide-on-med-and-down">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </div>
+    </nav>
+    <ul class="sidenav" id="mobile-sidebar">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="#!" class="sidenav-close">Close</a></li>
+    </ul>
+    {% block content %}
+    {% endblock %}
+
+    <script type="text/javascript" src="js/external/materialize.min.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+  </body>
+</html>

@@ -18,6 +18,7 @@
     "dialogflow": "^0.6.0",
     "express": "^4.17.1",
     "jsonpath": "^1.0.2",
+    "nunjucks": "^3.2.0",
     "pokedex-promise-v2": "^3.2.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
