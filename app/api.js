@@ -3,22 +3,42 @@
 const Pokedex = require('pokedex-promise-v2')
 const pokeapi = new Pokedex({ protocol: 'https' })
 
+/**
+ * Gets the pokemon object of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the pokemon object
+ */
 exports.getPokemon = function (pokemonId) {
   return pokeapi.getPokemonByName(pokemonId)
     .then(body => pokeapi.getPokemonSpeciesByName(body.id))
     .then(body => getPokemonObject(body))
 }
 
+/**
+ * Gets the primary colour of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the colour
+ */
 exports.getColour = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => body.color.name)
 }
 
+/**
+ * Gets the sprites of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the sprites
+ */
 exports.getSprites = function (pokemonId) {
   return pokeapi.getPokemonByName(pokemonId)
     .then(body => body.sprites)
 }
 
+/**
+ * Gets the forms of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the forms
+ */
 exports.getForms = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => pokeapi.resource(body.varieties.map(value => value.pokemon.url)))
@@ -26,11 +46,21 @@ exports.getForms = function (pokemonId) {
     .then(body => body.map(value => findNameForLanguage(value.names, 'en', value.pokemon.name)))
 }
 
+/**
+ * Gets the types of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the types
+ */
 exports.getTypes = function (pokemonId) {
   return pokeapi.getPokemonByName(pokemonId)
     .then(body => body.types.map(type => type.type.name))
 }
 
+/**
+ * Gets the evolution chain of the given pokemonId
+ * @param pokemonId the pokemonId
+ * @returns A Promise with the evolution chain
+ */
 exports.getEvolutions = function (pokemonId) {
   return pokeapi.getPokemonSpeciesByName(pokemonId)
     .then(body => pokeapi.resource(body.evolution_chain.url))
