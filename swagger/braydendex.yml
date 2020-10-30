@@ -1,0 +1,58 @@
+openapi: 3.0.1
+info:
+  title: Brayden Dex
+  version: 0.0.1
+  description: API for dealing with Google Home Integration app about pokemon questions
+  license:
+    name: GPL-3.0 License
+    url: 'https://github.com/wes-ahrens/braydendex/blob/master/LICENSE'
+paths:
+  /pokemon:
+    summary: Specific to a pokemon
+  '/pokemon/{pokedex}':
+    summary: Information about a specific pokemon
+    get:
+      summary: Gets the pokemon
+      description: Gets the pokemon with the given `pokedex`
+      operationId: getPokemon
+      parameters:
+        - name: pokedex
+          in: path
+          description: Pokedex number of pokemon
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pokemon'
+        '500':
+          description: failure
+          content:
+            application/json: {}
+components:
+  schemas:
+    Pokemon:
+      required:
+        - name
+        - pokedex
+      type: object
+      properties:
+        name:
+          type: string
+          example: Mewtwo
+        pokedex:
+          type: integer
+          format: int64
+          example: 150
+servers:
+  - url: 'https://braydendex.herokuapp.com/api'
+    variables: {}
+    description: Public
+  - url: 'https://localhost:8080/api'
+    variables: {}
+    description: Local Testing

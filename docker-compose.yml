@@ -1,0 +1,10 @@
+version: "3.8"
+services:
+    swagger:
+        image: swaggerapi/swagger-editor
+        ports: 
+            - 8888:8080
+        volumes:
+            - './swagger:/tmp/swagger'
+        environment:
+            SWAGGER_FILE: /tmp/swagger/braydendex.yml

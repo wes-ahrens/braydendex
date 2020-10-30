@@ -7,6 +7,10 @@ const bodyParser = require('body-parser')
 const { dialogflow } = require('./dialogflow/dispatch')
 const restApi = require('./rest/root')
 
+const swaggerUi = require('swagger-ui-express')
+const yaml = require('yamljs')
+const swaggerDoc = yaml.load('./swagger/braydendex.yml')
+
 const server = express()
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
@@ -17,6 +21,9 @@ nunjucks.configure(templatePath, {
   autoescape: true,
   express: server
 })
+
+// Swagger Docs
+server.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc))
 
 // Webhook
 server.use('/api', restApi)
