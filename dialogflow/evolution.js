@@ -5,7 +5,7 @@ const api = require('../app/api')
 function pokemonEvolution (conv) {
   console.log('Asking for evolutions...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getEvolutions(params.pokemonId)
+  return api.getEvolutions(params.pokedex)
     .then(function (chain) {
       conv.ask(createEvolutionString(chain))
       return Promise.resolve(conv)

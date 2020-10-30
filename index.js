@@ -5,6 +5,7 @@ const express = require('express')
 const nunjucks = require('nunjucks')
 const bodyParser = require('body-parser')
 const { dialogflow } = require('./dialogflow/dispatch')
+const restApi = require('./rest/root')
 
 const server = express()
 server.use(bodyParser.json())
@@ -18,7 +19,7 @@ nunjucks.configure(templatePath, {
 })
 
 // Webhook
-server.post('/api', dialogflow)
+server.use('/api', restApi)
 server.post('/dialogflow/api', dialogflow)
 
 server.get('/', (req, res) => {

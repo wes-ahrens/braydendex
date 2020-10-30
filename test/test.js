@@ -211,7 +211,7 @@ function checkForPokemon (res, id, name) {
   res.body.should.have.property('outputContexts')
   res.body.outputContexts.length.should.be.eql(1)
   res.body.outputContexts[0].should.have.property('parameters')
-  res.body.outputContexts[0].parameters.should.have.property('pokemonId').eql(id)
+  res.body.outputContexts[0].parameters.should.have.property('pokedex').eql(id)
   res.body.outputContexts[0].parameters.should.have.property('name').eql(name)
 }
 
@@ -254,7 +254,7 @@ describe('api', function () {
       return api.getPokemon('bulbasaur')
         .then(response => {
           expect(response.name).to.equal('Bulbasaur')
-          expect(response.pokemonId).to.equal(1)
+          expect(response.pokedex).to.equal(1)
         })
     })
   })
@@ -263,7 +263,7 @@ describe('api', function () {
       return api.getPokemon(1)
         .then(response => {
           expect(response.name).to.equal('Bulbasaur')
-          expect(response.pokemonId).to.equal(1)
+          expect(response.pokedex).to.equal(1)
         })
     })
   })

@@ -20,7 +20,7 @@
         "parameters": {
           "Pokemon": "castform",
           "Pokemon.original": "castform",
-          "pokemonId": 351,
+          "pokedex": 351,
           "name": "Castform"
         }
       },

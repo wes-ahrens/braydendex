@@ -4,72 +4,72 @@ const Pokedex = require('pokedex-promise-v2')
 const pokeapi = new Pokedex({ protocol: 'https' })
 
 /**
- * Gets the pokemon object of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the pokemon object of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the pokemon object
  */
-exports.getPokemon = function (pokemonId) {
-  return pokeapi.getPokemonByName(pokemonId)
+exports.getPokemon = function (pokedex) {
+  return pokeapi.getPokemonByName(pokedex)
     .then(body => pokeapi.getPokemonSpeciesByName(body.id))
     .then(body => getPokemonObject(body))
 }
 
 /**
- * Gets the primary colour of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the primary colour of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the colour
  */
-exports.getColour = function (pokemonId) {
-  return pokeapi.getPokemonSpeciesByName(pokemonId)
+exports.getColour = function (pokedex) {
+  return pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => body.color.name)
 }
 
 /**
- * Gets the sprites of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the sprites of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the sprites
  */
-exports.getSprites = function (pokemonId) {
-  return pokeapi.getPokemonByName(pokemonId)
+exports.getSprites = function (pokedex) {
+  return pokeapi.getPokemonByName(pokedex)
     .then(body => body.sprites)
 }
 
 /**
- * Gets the forms of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the forms of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the forms
  */
-exports.getForms = function (pokemonId) {
-  return pokeapi.getPokemonSpeciesByName(pokemonId)
+exports.getForms = function (pokedex) {
+  return pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => pokeapi.resource(body.varieties.map(value => value.pokemon.url)))
     .then(body => pokeapi.resource(flattenFormUrls(body)))
     .then(body => body.map(value => findNameForLanguage(value.names, 'en', value.pokemon.name)))
 }
 
 /**
- * Gets the types of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the types of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the types
  */
-exports.getTypes = function (pokemonId) {
-  return pokeapi.getPokemonByName(pokemonId)
+exports.getTypes = function (pokedex) {
+  return pokeapi.getPokemonByName(pokedex)
     .then(body => body.types.map(type => type.type.name))
 }
 
 /**
- * Gets the evolution chain of the given pokemonId
- * @param pokemonId the pokemonId
+ * Gets the evolution chain of the given pokedex
+ * @param pokedex the pokedex
  * @returns A Promise with the evolution chain
  */
-exports.getEvolutions = function (pokemonId) {
-  return pokeapi.getPokemonSpeciesByName(pokemonId)
+exports.getEvolutions = function (pokedex) {
+  return pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => pokeapi.resource(body.evolution_chain.url))
     .then(body => transformChainNode(body.chain))
 }
 
 function getPokemonObject (speciesBody) {
   return {
-    pokemonId: speciesBody.id,
+    pokedex: speciesBody.id,
     name: findNameForLanguage(speciesBody.names, 'en', speciesBody.name)
   }
 }
@@ -82,7 +82,7 @@ function transformChainNode (chain) {
       var first = array.shift()
       return Promise.resolve({
         name: findNameForLanguage(first.names, 'en', first.name),
-        pokemonId: first.id,
+        pokedex: first.id,
         evolution: array
       })
     })

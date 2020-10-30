@@ -20,7 +20,7 @@
         "parameters": {
           "Pokemon": "ralts",
           "Pokemon.original": "ralts",
-          "pokemonId": 280,
+          "pokedex": 280,
           "name": "Ralts"
         }
       },

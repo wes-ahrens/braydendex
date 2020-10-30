@@ -44,13 +44,13 @@ function pokedexNumber (conv, params) {
       'Sorry, I could not find pokemon with pokedex number ' + params.number))
 }
 
-function selectPokemon (conv, pokemonId) {
-  return api.getPokemon(pokemonId)
+function selectPokemon (conv, pokedex) {
+  return api.getPokemon(pokedex)
     .then(pokemonObj => pokemonContexts(conv, pokemonObj))
 }
 
 function pokemonContexts (conv, pokemonObj) {
-  conv.ask('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokemonId)
+  conv.ask('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokedex)
   conv.contexts.set('pokemon', 5, pokemonObj)
   return Promise.resolve(conv)
 }
@@ -58,7 +58,7 @@ function pokemonContexts (conv, pokemonObj) {
 function pokemonColour (conv) {
   console.log('Asking for colour...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getColour(params.pokemonId)
+  return api.getColour(params.pokedex)
     .then(colour => {
       conv.ask(params.name + ' is ' + colour)
       return Promise.resolve(conv)
@@ -70,7 +70,7 @@ function pokemonColour (conv) {
 function pokemonForms (conv) {
   console.log('Asking if other forms exist...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getForms(params.pokemonId)
+  return api.getForms(params.pokedex)
     .then(forms => {
       conv.ask('The possible forms are ' + forms.join(' and '))
       return Promise.resolve(conv)
@@ -84,7 +84,7 @@ function pokemonForms (conv) {
 function pokemonType (conv) {
   console.log('Asking for type...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getTypes(params.pokemonId)
+  return api.getTypes(params.pokedex)
     .then(types => {
       conv.ask(params.name + ' is ' + types.join(' and ') + ' type')
       return Promise.resolve(conv)

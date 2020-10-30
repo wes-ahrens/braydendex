@@ -20,7 +20,7 @@
         "parameters": {
           "number": 150,
           "number.original": "150",
-          "pokemonId": 150,
+          "pokedex": 150,
           "name": "Mewtwo"
         }
       },

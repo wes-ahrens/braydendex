@@ -23,7 +23,7 @@ const spriteMappings = {
 function pokemonSprites (conv) {
   console.log('Asking for sprites...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getSprites(params.pokemonId)
+  return api.getSprites(params.pokedex)
     .then(sprites => Object.keys(sprites)
       .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
       .filter(key => sprites[key] != null)
@@ -73,11 +73,11 @@ function spritesOption (conv, params, option) {
   conv.ask('Summary of ' + ctxParams.name)
   conv.ask(new BasicCard({
     title: 'Name: ' + ctxParams.name,
-    subtitle: 'Pokedex: ' + ctxParams.pokemonId,
+    subtitle: 'Pokedex: ' + ctxParams.pokedex,
     text: ctxParams.name + ' ' + imgText,
     buttons: new Button({
       title: 'View on pokemondb',
-      url: 'https://pokemondb.net/pokedex/' + ctxParams.pokemonId
+      url: 'https://pokemondb.net/pokedex/' + ctxParams.pokedex
     }),
     image: new Image({
       url: option,
