@@ -70,7 +70,7 @@ const table = [
 exports.getEffectiveMapAgainst = function(vsTypes, pogo=false) {
     return table
         .map(row => {
-            return vsTypes.map(type => getMultiplier(row[typeLookup.indexOf(type)]))
+            return vsTypes.map(type => getMultiplier(row[typeLookup.indexOf(type)], pogo))
                 .reduce((a,c) => a*c)
         })
         .reduce((a,c,idx) => {
@@ -79,7 +79,7 @@ exports.getEffectiveMapAgainst = function(vsTypes, pogo=false) {
         }, {})
 }
 
-function getMultiplier(index, pogo=false) {
+function getMultiplier(index, pogo) {
     var o = effectivenessLookup[index]
     return pogo ? o.pogo : o.multiplier
 }
