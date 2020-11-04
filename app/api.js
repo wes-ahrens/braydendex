@@ -74,18 +74,16 @@ function getPokemonObject (speciesBody) {
   }
 }
 
-function transformChainNode (chain) {
+async function transformChainNode (chain) {
   var promises = [pokeapi.resource(chain.species.url)]
     .concat(chain.evolves_to.map(evo => transformChainNode(evo)))
-  return Promise.all(promises)
-    .then(array => {
-      var first = array.shift()
-      return Promise.resolve({
-        name: findNameForLanguage(first.names, 'en', first.name),
-        pokedex: first.id,
-        evolution: array
-      })
-    })
+  const array = await Promise.all(promises)
+  var first = array.shift()
+  return Promise.resolve({
+    name: findNameForLanguage(first.names, 'en', first.name),
+    pokedex: first.id,
+    evolution: array
+  })
 }
 
 function flattenFormUrls (array) {

@@ -56,25 +56,27 @@ const table = [
     //rock
     [2,3,2,2,2,3,1,2,1,3,2,3,2,2,2,2,1,2],
     //ghost
-    [0,2,2,2,2,2,2,2,2,2,3,2,2,3,2,1,2,2],
+    [0,2,2,2,2,2,2,2,2,2,3,2,2,3,2,1,1,2],
     //dragon
     [2,2,2,2,2,2,2,2,2,2,2,2,2,2,3,2,1,0],
     //dark
-    [2,2,2,2,2,2,1,2,2,2,3,2,2,3,2,1,2,1],
+    [2,2,2,2,2,2,1,2,2,2,3,2,2,3,2,1,1,1],
     //steel
-    [2,1,1,2,1,3,2,2,2,2,2,2,3,2,2,2,1,3],
+    [2,1,1,2,2,3,2,2,2,2,2,2,3,2,2,2,1,3],
     //fairy
     [2,1,2,2,2,2,3,1,2,2,2,2,2,2,3,3,1,2]
 ]
 
-exports.getEffectiveness = function(vsTypes, pogo=false) {
-    return table.map(row => {
-        return vsTypes.map(type => getMultiplier(row[typeLookup.indexOf(type)]))
-            .reduce((a,c) => a*c)
-    }).reduce((a,c,idx) => {
-        a[typeLookup[idx]] = c
-        return a
-    }, {})
+exports.getEffectiveMapAgainst = function(vsTypes, pogo=false) {
+    return table
+        .map(row => {
+            return vsTypes.map(type => getMultiplier(row[typeLookup.indexOf(type)]))
+                .reduce((a,c) => a*c)
+        })
+        .reduce((a,c,idx) => {
+            a[typeLookup[idx]] = c
+            return a
+        }, {})
 }
 
 function getMultiplier(index, pogo=false) {
