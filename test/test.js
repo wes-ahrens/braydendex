@@ -3,6 +3,7 @@ const it = require('mocha').it
 const nock = require('nock')
 const expect = require('chai').expect
 const api = require('../app/api')
+const types = require('../app/types')
 const fs = require('fs')
 const path = require('path')
 const { testServer } = require('./../index')
@@ -288,6 +289,16 @@ describe('api', function () {
         .then(response => {
           expect(response[0]).to.equal('ralts')
         })
+    })
+  })
+})
+
+describe('types', () => {
+  describe('getEffectiveness', function() {
+    it('Electric should be weak to electric', function () {
+      var effectiveness = types.getEffectiveness(["electric"])
+      console.log(effectiveness)
+      expect(effectiveness["electric"]).to.equal(0.5)
     })
   })
 })

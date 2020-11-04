@@ -16,13 +16,7 @@ paths:
       description: Gets the pokemon with the given `pokedex`
       operationId: getPokemon
       parameters:
-        - name: pokedex
-          in: path
-          description: Pokedex number of pokemon
-          required: true
-          schema:
-            type: integer
-            format: int64
+        - $ref: '#/components/parameters/Pokedex'
       responses:
         '200':
           description: successful
@@ -30,6 +24,106 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pokemon'
+        '500':
+          description: failure
+          content:
+            application/json: {}
+  '/pokemon/{pokedex}/colour':
+    summary: Colour of a pokemon
+    get:
+      summary: Gets the colour of a pokemon
+      description: Gets the colour of the pokemon with the given `pokedex`
+      operationId: getPokemonColour
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: string
+                example: red
+        '500':
+          description: failure
+          content:
+            application/json: {}
+  '/pokemon/{pokedex}/sprites':
+    summary: Gets sprites of the pokemon
+    get:
+      summary: Gets sprites of a pokemon
+      description: Gets the sprites of the pokemon with the given `pokedex`
+      operationId: getPokemonSprites
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json: {}
+        '500':
+          description: failure
+          content:
+            application/json: {}
+  '/pokemon/{pokedex}/forms':
+    summary: Gets the forms of the pokemon
+    get:
+      summary: Gets the forms of a pokemon
+      description: Gets the forms of the pokemon with the given `pokedex`
+      operationId: getPokemonForms
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: Mega Mewtwo X
+        '500':
+          description: failure
+          content:
+            application/json: {}
+  '/pokemon/{pokedex}/types':
+    summary: Gets the type(s) of the pokemon
+    get:
+      summary: Gets the type(s) of a pokemon
+      description: Gets the type(s) of the pokemon with the given `pokedex`
+      operationId: getPokemonTypes
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  example: psychic
+        '500':
+          description: failure
+          content:
+            application/json: {}
+  '/pokemon/{pokedex}/evolutions':
+    summary: Gets the evolution(s) of the pokemon
+    get:
+      summary: Gets the evolution(s) of a pokemon
+      description: Gets the evolution(s) of the pokemon with the given `pokedex`
+      operationId: getPokemonEvolutions
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evolution'
         '500':
           description: failure
           content:
@@ -47,12 +141,45 @@ components:
           example: Mewtwo
         pokedex:
           type: integer
-          format: int64
+          format: int32
           example: 150
+    Evolution:
+      required:
+        - name
+        - pokedex
+      type: object
+      properties:
+        name:
+          type: string
+          example: Charmander
+        pokedex:
+          type: integer
+          format: int32
+          example: 4
+        evolution:
+          type: array
+          items:
+            $ref: '#/components/schemas/Evolution'
+            example:
+              name: Charmeleon
+              pokedex: 5
+              evolution:
+                - name: Charizard
+                  pokedex: 6
+                  evolution: []
+  parameters:
+    Pokedex:
+      name: pokedex
+      in: path
+      description: Pokedex number of pokemon
+      required: true
+      schema:
+        type: integer
+        format: int32
 servers:
   - url: 'https://braydendex.herokuapp.com/api'
     variables: {}
     description: Public
-  - url: 'https://localhost:8080/api'
+  - url: 'http://localhost:8080/api'
     variables: {}
     description: Local Testing
