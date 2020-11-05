@@ -2,6 +2,7 @@
 
 const Pokedex = require('pokedex-promise-v2')
 const pokeapi = new Pokedex({ protocol: 'https' })
+const typesApi = require('./types')
 
 /**
  * Gets the pokemon object of the given pokedex
@@ -51,10 +52,11 @@ exports.getForms = function (pokedex) {
  * @param pokedex the pokedex
  * @returns A Promise with the types
  */
-exports.getTypes = function (pokedex) {
+function getTypes (pokedex) {
   return pokeapi.getPokemonByName(pokedex)
     .then(body => body.types.map(type => type.type.name))
 }
+exports.getTypes = getTypes
 
 /**
  * Gets the evolution chain of the given pokedex
@@ -65,6 +67,38 @@ exports.getEvolutions = function (pokedex) {
   return pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => pokeapi.resource(body.evolution_chain.url))
     .then(body => transformChainNode(body.chain))
+}
+
+/**
+ * Gets an effectiveness map against the types of the given pokedex
+ * @param pokedex the pokedex
+ * @param {boolean} pogo whether to use pogo multipliers
+ */
+exports.getEffectivenessMapAgainst = function (pokedex, pogo=false) {
+  return getTypes(pokedex)
+    .then(types => typesApi.getEffectiveMapAgainst(types, pogo))
+}
+
+/**
+ * Gets a list of types that are more than effective against the types
+ * of the given pokedex
+ * @param pokedex the pokedex
+ * @param {boolean} pogo whether to use pogo multipliers
+ */
+exports.getGoodCounterTypes = function (pokedex, pogo=false) {
+  return getTypes(pokedex)
+    .then(types => typesApi.getGoodCounterTypes(types, pogo))
+}
+
+/**
+ * Gets a list of types that are less than effective against the types
+ * of the given pokedex
+ * @param pokedex the pokedex
+ * @param {boolean} pogo whether to use pogo multipliers
+ */
+exports.getBadCounterTypes = function (pokedex, pogo=false) {
+  return getTypes(pokedex)
+    .then(types => typesApi.getBadCounterTypes(types, pogo))
 }
 
 function getPokemonObject (speciesBody) {

@@ -5,6 +5,7 @@ const api = require('../app/api')
 const { handleError } = require('./util')
 const { pokemonSprites, spritesOption } = require('./sprites')
 const { pokemonEvolution } = require('./evolution')
+const { counterTypesGood, counterTypesBad } = require('./counters')
 
 const app = dialogflow({ debug: true })
 app.middleware((conv) => {
@@ -31,6 +32,8 @@ app.intent('evolution', pokemonEvolution)
 app.intent('forms', pokemonForms)
 app.intent('show', pokemonSprites)
 app.intent('show-selection', spritesOption)
+app.intent('counter-types-good', counterTypesGood)
+app.intent('counter-types-bad', counterTypesBad)
 
 function pokemonName (conv, params) {
   return selectPokemon(conv, params.Pokemon)

@@ -128,6 +128,31 @@ paths:
           description: failure
           content:
             application/json: {}
+  '/pokemon/{pokedex}/effectiveness':
+    summary: Gets the effectiveness of types against the pokemon
+    get:
+      summary: Gets the effectiveness of types against the pokemon
+      description: Gets the effectiveness of types against the pokemon with the given `pokedex`
+      operationId: getPokemonEffectiveness
+      parameters:
+        - $ref: '#/components/parameters/Pokedex'
+        - name: pogo
+          in: query
+          description: Whether to use Pokemon GO multipliers
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Effectiveness'
+        '500':
+          description: failure
+          content:
+            application/json: {}
 components:
   schemas:
     Pokemon:
@@ -167,6 +192,63 @@ components:
                 - name: Charizard
                   pokedex: 6
                   evolution: []
+    Effectiveness:
+      type: object
+      properties:
+        normal:
+          type: number
+          example: 0.5
+        fire:
+          type: number
+          example: 0.5
+        water:
+          type: number
+          example: 0.5
+        grass:
+          type: number
+          example: 0.5
+        electric:
+          type: number
+          example: 0.5
+        ice:
+          type: number
+          example: 0.5
+        fighting:
+          type: number
+          example: 0.5
+        poison:
+          type: number
+          example: 0.5
+        ground:
+          type: number
+          example: 0.5
+        flying:
+          type: number
+          example: 0.5
+        psychic:
+          type: number
+          example: 0.5
+        bug:
+          type: number
+          example: 0.5
+        rock:
+          type: number
+          example: 0.5
+        ghost:
+          type: number
+          example: 0.5
+        dragon:
+          type: number
+          example: 0.5
+        dark:
+          type: number
+          example: 0.5
+        steel:
+          type: number
+          example: 0.5
+        fairy:
+          type: number
+          example: 0.5
   parameters:
     Pokedex:
       name: pokedex

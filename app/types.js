@@ -67,17 +67,57 @@ const table = [
     [2,1,2,2,2,2,3,1,2,2,2,2,2,2,3,3,1,2]
 ]
 
-exports.getEffectiveMapAgainst = function(vsTypes, pogo=false) {
+function getEffectiveAgainstArray (vsTypes, pogo=false) {
     return table
         .map(row => {
             return vsTypes.map(type => getMultiplier(row[typeLookup.indexOf(type)], pogo))
                 .reduce((a,c) => a*c)
         })
+}
+
+function getEffectiveMapAgainst (vsTypes, pogo=false) {
+    return getEffectiveAgainstArray(vsTypes, pogo)
         .reduce((a,c,idx) => {
             a[typeLookup[idx]] = c
             return a
         }, {})
 }
+
+function getCounters (vsTypes, filterFn, sortFn, pogo=false) {
+    return getEffectiveAgainstArray(vsTypes, pogo)
+        .map((m,idx) => {
+            return {type: typeLookup[idx], multiplier: m}
+        })
+        .filter(filterFn)
+        .sort(sortFn)
+        .reduce((a,c,idx,arr) => {
+            var index = a.length
+            if(index > 0 && arr[idx-1].multiplier === c.multiplier) {
+                index = a.length-1
+            }
+            a[index] = a[index] || {multiplier: c.multiplier, types: []}
+            a[index].types.push(c.type)
+            return a
+        }, [])
+}
+
+function getGoodCounterTypes (vsTypes, pogo=false) {
+    return getCounters(vsTypes, 
+        o => o.multiplier > 1, 
+        (a,b) => b.multiplier - a.multiplier,
+        pogo)
+}
+
+function getBadCounterTypes (vsTypes, pogo=false) {
+    return getCounters(vsTypes, 
+        o => o.multiplier < 1,
+        (a,b) => a.multiplier - b.multiplier,
+        pogo)
+}
+
+exports.getEffectiveMapAgainst = getEffectiveMapAgainst
+exports.getGoodCounterTypes = getGoodCounterTypes
+exports.getBadCounterTypes = getBadCounterTypes
 
 function getMultiplier(index, pogo) {
     var o = effectivenessLookup[index]
