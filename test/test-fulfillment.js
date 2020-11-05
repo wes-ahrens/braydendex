@@ -182,6 +182,19 @@ describe('fulfillment', () => {
         })
     })
   })
+  describe('Ask for 150->good counters', () => {
+    it('Should return good counters for Mewtwo', (done) => {
+      chai.request(testServer)
+        .post('/dialogflow/api')
+        .send(getRequestJson('150-good-counters'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'The best counter type(s) are bug and ghost and dark.')
+          done()
+        })
+    })
+  })
   describe('Ask for 1000', () => {
     it('Should return error', (done) => {
       chai.request(testServer)
@@ -216,7 +229,7 @@ function checkForPokemon (res, id, name) {
   res.body.outputContexts[0].parameters.should.have.property('name').eql(name)
 }
 
-const pokeapi = nock('https://pokeapi.co:443').log(console.log).persist()
+const pokeapi = nock('https://pokeapi.co:443').persist()
 describe('api', function () {
   beforeEach(() => {
     pokeapi
