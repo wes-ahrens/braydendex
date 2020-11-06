@@ -190,7 +190,20 @@ describe('fulfillment', () => {
         .end((err, res) => {
           expect(err).to.be.null
           res.should.have.status(200)
-          checkTextToSpeech(res, 'The best counter type(s) are bug and ghost and dark.')
+          checkTextToSpeech(res, 'The best counter types are bug, ghost, dark.')
+          done()
+        })
+    })
+  })
+  describe('Ask for salamence->bad counters', () => {
+    it('Should return bad counters for Salamence', (done) => {
+      chai.request(testServer)
+        .post('/dialogflow/api')
+        .send(getRequestJson('salamence-bad-counters'))
+        .end((err, res) => {
+          expect(err).to.be.null
+          res.should.have.status(200)
+          checkTextToSpeech(res, 'The worst counter type is ground. The 2nd worst counter type is grass. The 3rd worst counter types are fire, water, fighting, bug.')
           done()
         })
     })

@@ -31,8 +31,12 @@ function counterTypesBad (conv) {
 }
 
 function handleCounters(counters, first) {
-    return counters.map((c,idx) => 'The ' + getOrderedString(idx+1, first) + ' counter type(s) are ' + c.types.join(' and ') + '.')
+    return counters.map((c,idx) => 'The ' + getOrderedString(idx+1, first) + ' counter ' + getPluralTypeString(c.types) + ' ' + c.types.join(', ') + '.')
         .join(' ')
+}
+
+function getPluralTypeString (arr) {
+    return arr.length > 1 ? 'types are' : 'type is'
 }
 
 function getOrderedString(num, first) {
