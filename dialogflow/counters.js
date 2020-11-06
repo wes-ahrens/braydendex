@@ -18,7 +18,8 @@ function counterTypesGood (conv) {
 
 function counterTypesBad (conv) {
     console.log('Asking for bad counters...')
-    return api.getGoodCounterTypes(params.pokedex)
+    const params = conv.contexts.get('pokemon').parameters
+    return api.getBadCounterTypes(params.pokedex)
         .then(counters => {
             conv.ask(handleCounters(counters, 'worst'))
             return Promise.resolve(conv)
