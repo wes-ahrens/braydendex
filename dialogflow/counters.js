@@ -35,7 +35,7 @@ function handleCounters(counters, first) {
 }
 
 function getOrderedString(num, first) {
-    return num == 1 ? first : getSuffix(num) + ' ' + first
+    return num == 1 ? first : num + getSuffix(num) + ' ' + first
 }
 
 function getSuffix(num) {
