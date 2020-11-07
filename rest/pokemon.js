@@ -43,7 +43,7 @@ router.get('/:pokedex/evolutions', (req,res) => {
 
 router.get('/:pokedex/effectiveness', (req,res) => {
     var pogo = req.query.pogo === undefined ? undefined : req.query.pogo.toLowerCase() === 'true'
-    api.getEffectivenessAgainst(req.params.pokedex, pogo)
+    api.getEffectivenessMapAgainst(req.params.pokedex, pogo)
         .then(effMap => res.status(200).json(effMap))
         .catch(err => res.status(500).json(err))
 })
