@@ -1,6 +1,7 @@
 'use strict'
 
 const api = require('../app/api')
+const { handleError, getNumberSuffix } = require('./util')
 
 function counterTypesGood (conv) {
     console.log('Asking for good counters...')
@@ -10,10 +11,7 @@ function counterTypesGood (conv) {
             conv.ask(handleCounters(counters, 'best'))
             return Promise.resolve(conv)
         })
-        .catch(err => {
-            conv.ask(err)
-            return Promise.resolve(conv)
-        })
+        .catch(err => handleError(conv, err, 'Sorry, could not retrieve best counters for ' + params.name))
 }
 
 function counterTypesBad (conv) {
@@ -24,10 +22,7 @@ function counterTypesBad (conv) {
             conv.ask(handleCounters(counters, 'worst'))
             return Promise.resolve(conv)
         })
-        .catch(err => {
-            conv.ask(err)
-            return Promise.resolve(conv)
-        })
+        .catch(err => handleError(conv, err, 'Sorry, could not retrieve worst counters for ' + params.name))
 }
 
 function handleCounters(counters, first) {
@@ -40,19 +35,7 @@ function getPluralTypeString (arr) {
 }
 
 function getOrderedString(num, first) {
-    return num == 1 ? first : num + getSuffix(num) + ' ' + first
-}
-
-function getSuffix(num) {
-    var a = ("" + num).split("").reverse()
-    if(a[1] != "1") {
-        switch(a[0]) {
-            case "1": return "st"
-            case "2": return "nd"
-            case "3": return "rd"
-        }
-    }
-    return "th"
+    return num == 1 ? first : num + getNumberSuffix(num) + ' ' + first
 }
 
 exports.counterTypesGood = counterTypesGood
