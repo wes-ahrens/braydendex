@@ -82,6 +82,7 @@ function getEffectiveMapAgainst (vsTypes, pogo=false) {
             return a
         }, {})
 }
+exports.getEffectiveMapAgainst = getEffectiveMapAgainst
 
 function getCounters (vsTypes, filterFn, sortFn, pogo=false) {
     return getEffectiveAgainstArray(vsTypes, pogo)
@@ -107,6 +108,7 @@ function getGoodCounterTypes (vsTypes, pogo=false) {
         (a,b) => b.multiplier - a.multiplier,
         pogo)
 }
+exports.getGoodCounterTypes = getGoodCounterTypes
 
 function getBadCounterTypes (vsTypes, pogo=false) {
     return getCounters(vsTypes, 
@@ -114,9 +116,6 @@ function getBadCounterTypes (vsTypes, pogo=false) {
         (a,b) => a.multiplier - b.multiplier,
         pogo)
 }
-
-exports.getEffectiveMapAgainst = getEffectiveMapAgainst
-exports.getGoodCounterTypes = getGoodCounterTypes
 exports.getBadCounterTypes = getBadCounterTypes
 
 function getMultiplier(index, pogo) {

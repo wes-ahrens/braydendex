@@ -20,39 +20,41 @@ const spriteMappings = {
   front_shiny: { friendly: 'Front View (Shiny)', order: 5 }
 }
 
-function pokemonSprites (conv) {
+async function pokemonSprites (conv) {
   console.log('Asking for sprites...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getSprites(params.pokedex)
-    .then(sprites => Object.keys(sprites)
+  try {
+    const sprites = await api.getSprites(params.pokedex)
+    const items = Object.keys(sprites)
       .sort((a, b) => spriteMappings[a].order - spriteMappings[b].order)
       .filter(key => sprites[key] != null)
-      .map(key => {
-        console.log('Found sprite ' + spriteMappings[key].friendly + ' : ' + sprites[key])
+      .map(key_1 => {
+        console.log('Found sprite ' + spriteMappings[key_1].friendly + ' : ' + sprites[key_1])
         return {
-          friendly: spriteMappings[key].friendly,
+          friendly: spriteMappings[key_1].friendly,
           image: new Image({
-            url: sprites[key],
-            alt: 'Image of ' + params.name + ' ' + spriteMappings[key].friendly
+            url: sprites[key_1],
+            alt: 'Image of ' + params.name + ' ' + spriteMappings[key_1].friendly
           })
         }
+      })
+    const itemMap = spriteListItems(items)
+    if (!conv.screen) {
+      conv.ask('Sorry, Cannot show images on a device without a screen')
+    } else {
+      conv.ask(params.name + ' images')
+      conv.ask(new List({
+        title: params.name,
+        items: itemMap
       }))
-    .then(items => spriteListItems(items))
-    .then(itemMap => {
-      if (!conv.screen) {
-        conv.ask('Sorry, Cannot show images on a device without a screen')
-      } else {
-        conv.ask(params.name + ' images')
-        conv.ask(new List({
-          title: params.name,
-          items: itemMap
-        }))
-      }
-      return Promise.resolve(conv)
-    })
-    .catch(error => handleError(conv, error,
-      'Sorry, could not retrieve sprites for ' + params.name))
+    }
+    return Promise.resolve(conv)
+  } catch (error) {
+    return await handleError(conv, error,
+      'Sorry, could not retrieve sprites for ' + params.name)
+  }
 }
+exports.pokemonSprites = pokemonSprites
 
 function spriteListItems (items) {
   const itemMap = {}
@@ -87,6 +89,4 @@ function spritesOption (conv, params, option) {
   }))
   Promise.resolve(conv)
 }
-
 exports.spritesOption = spritesOption
-exports.pokemonSprites = pokemonSprites

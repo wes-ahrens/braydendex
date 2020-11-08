@@ -5,6 +5,7 @@ function handleError (conv, error, message) {
   conv.ask(message)
   return Promise.resolve(conv)
 }
+exports.handleError = handleError
 
 function getNumberSuffix(num) {
   var a = ("" + num).split("").reverse()
@@ -17,6 +18,4 @@ function getNumberSuffix(num) {
   }
   return "th"
 }
-
-exports.handleError = handleError
 exports.getNumberSuffix = getNumberSuffix

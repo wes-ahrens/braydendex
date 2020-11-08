@@ -2,15 +2,14 @@
 
 const api = require('../app/api')
 
-function pokemonEvolution (conv) {
+async function pokemonEvolution (conv) {
   console.log('Asking for evolutions...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getEvolutions(params.pokedex)
-    .then(function (chain) {
-      conv.ask(createEvolutionString(chain))
-      return Promise.resolve(conv)
-    })
+  const chain = await api.getEvolutions(params.pokedex)
+  conv.ask(createEvolutionString(chain))
+  return Promise.resolve(conv)
 }
+exports.pokemonEvolution = pokemonEvolution
 
 function createEvolutionString (node) {
   console.log(node)
@@ -36,5 +35,3 @@ function createEvolutionString (node) {
   }
   return evoString
 }
-
-exports.pokemonEvolution = pokemonEvolution

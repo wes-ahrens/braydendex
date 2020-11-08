@@ -35,63 +35,67 @@ app.intent('show-selection', spritesOption)
 app.intent('counter-types-good', counterTypesGood)
 app.intent('counter-types-bad', counterTypesBad)
 
-function pokemonName (conv, params) {
-  return selectPokemon(conv, params.Pokemon)
-    .catch(error => handleError(conv, error,
-      'Sorry, I could not find pokemon ' + params.Pokemon))
+async function pokemonName (conv, params) {
+  try {
+    return await selectPokemon(conv, params.Pokemon)
+  } catch (error) {
+    return await handleError(conv, error,
+      'Sorry, I could not find pokemon ' + params.Pokemon)
+  }
 }
 
-function pokedexNumber (conv, params) {
-  return selectPokemon(conv, params.number)
-    .catch(error => handleError(conv, error,
-      'Sorry, I could not find pokemon with pokedex number ' + params.number))
+async function pokedexNumber (conv, params) {
+  try {
+    return await selectPokemon(conv, params.number)
+  } catch (error) {
+    return await handleError(conv, error,
+      'Sorry, I could not find pokemon with pokedex number ' + params.number)
+  }
 }
 
-function selectPokemon (conv, pokedex) {
-  return api.getPokemon(pokedex)
+async function selectPokemon (conv, pokedex) {
+  return await api.getPokemon(pokedex)
     .then(pokemonObj => pokemonContexts(conv, pokemonObj))
 }
 
-function pokemonContexts (conv, pokemonObj) {
+async function pokemonContexts (conv, pokemonObj) {
   conv.ask('Pokemon ' + pokemonObj.name + ' is pokedex number ' + pokemonObj.pokedex)
   conv.contexts.set('pokemon', 5, pokemonObj)
   return Promise.resolve(conv)
 }
 
-function pokemonColour (conv) {
+async function pokemonColour (conv) {
   console.log('Asking for colour...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getColour(params.pokedex)
-    .then(colour => {
-      conv.ask(params.name + ' is ' + colour)
-      return Promise.resolve(conv)
-    })
-    .catch(error => handleError(conv, error,
-      'Sorry, could not retrieve colour for ' + params.name))
+  try {
+    const colour = await api.getColour(params.pokedex)
+    conv.ask(params.name + ' is ' + colour)
+    return Promise.resolve(conv)
+  } catch (error) {
+    return await handleError(conv, error,
+      'Sorry, could not retrieve colour for ' + params.name)
+  }
 }
 
-function pokemonForms (conv) {
+async function pokemonForms (conv) {
   console.log('Asking if other forms exist...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getForms(params.pokedex)
-    .then(forms => {
-      conv.ask('The possible forms are ' + forms.join(' and '))
-      return Promise.resolve(conv)
-    })
-    .catch(function (error) {
-      conv.ask(error)
-      return Promise.resolve(conv)
-    })
+  try {
+    const forms = await api.getForms(params.pokedex)
+    conv.ask('The possible forms are ' + forms.join(' and '))
+    return Promise.resolve(conv)
+  } catch (error) {
+    conv.ask(error)
+    return Promise.resolve(conv)
+  }
 }
 
-function pokemonType (conv) {
+async function pokemonType (conv) {
   console.log('Asking for type...')
   const params = conv.contexts.get('pokemon').parameters
-  return api.getTypes(params.pokedex)
-    .then(types => {
-      conv.ask(params.name + ' is ' + types.join(' and ') + ' type')
-      return Promise.resolve(conv)
-    })
+  const types = await api.getTypes(params.pokedex)
+  conv.ask(params.name + ' is ' + types.join(' and ') + ' type')
+  return Promise.resolve(conv)
 }
 
 exports.dialogflow = app

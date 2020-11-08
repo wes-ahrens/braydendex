@@ -9,51 +9,55 @@ const typesApi = require('./types')
  * @param pokedex the pokedex
  * @returns A Promise with the pokemon object
  */
-exports.getPokemon = function (pokedex) {
-  return pokeapi.getPokemonByName(pokedex)
+async function getPokemon (pokedex) {
+  return await pokeapi.getPokemonByName(pokedex)
     .then(body => pokeapi.getPokemonSpeciesByName(body.id))
     .then(body => getPokemonObject(body))
 }
+exports.getPokemon = getPokemon
 
 /**
  * Gets the primary colour of the given pokedex
  * @param pokedex the pokedex
  * @returns A Promise with the colour
  */
-exports.getColour = function (pokedex) {
-  return pokeapi.getPokemonSpeciesByName(pokedex)
-    .then(body => body.color.name)
+async function getColour (pokedex) {
+  const body = await pokeapi.getPokemonSpeciesByName(pokedex)
+  return body.color.name
 }
+exports.getColour = getColour
 
 /**
  * Gets the sprites of the given pokedex
  * @param pokedex the pokedex
  * @returns A Promise with the sprites
  */
-exports.getSprites = function (pokedex) {
-  return pokeapi.getPokemonByName(pokedex)
-    .then(body => body.sprites)
+async function getSprites (pokedex) {
+  const body = await pokeapi.getPokemonByName(pokedex)
+  return body.sprites
 }
+exports.getSprites = getSprites
 
 /**
  * Gets the forms of the given pokedex
  * @param pokedex the pokedex
  * @returns A Promise with the forms
  */
-exports.getForms = function (pokedex) {
-  return pokeapi.getPokemonSpeciesByName(pokedex)
+async function getForms (pokedex) {
+  return await pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => pokeapi.resource(body.varieties.map(value => value.pokemon.url)))
     .then(body => pokeapi.resource(flattenFormUrls(body)))
     .then(body => body.map(value => findNameForLanguage(value.names, 'en', value.pokemon.name)))
 }
+exports.getForms = getForms
 
 /**
  * Gets the types of the given pokedex
  * @param pokedex the pokedex
  * @returns A Promise with the types
  */
-function getTypes (pokedex) {
-  return pokeapi.getPokemonByName(pokedex)
+async function getTypes (pokedex) {
+  return await pokeapi.getPokemonByName(pokedex)
     .then(body => body.types.map(type => type.type.name))
 }
 exports.getTypes = getTypes
@@ -63,21 +67,23 @@ exports.getTypes = getTypes
  * @param pokedex the pokedex
  * @returns A Promise with the evolution chain
  */
-exports.getEvolutions = function (pokedex) {
-  return pokeapi.getPokemonSpeciesByName(pokedex)
+async function getEvolutions (pokedex) {
+  return await pokeapi.getPokemonSpeciesByName(pokedex)
     .then(body => pokeapi.resource(body.evolution_chain.url))
     .then(body => transformChainNode(body.chain))
 }
+exports.getEvolutions = getEvolutions
 
 /**
  * Gets an effectiveness map against the types of the given pokedex
  * @param pokedex the pokedex
  * @param {boolean} pogo whether to use pogo multipliers
  */
-exports.getEffectivenessMapAgainst = function (pokedex, pogo=false) {
-  return getTypes(pokedex)
+async function getEffectivenessMapAgainst (pokedex, pogo=false) {
+  return await getTypes(pokedex)
     .then(types => typesApi.getEffectiveMapAgainst(types, pogo))
 }
+exports.getEffectivenessMapAgainst = getEffectivenessMapAgainst
 
 /**
  * Gets a list of types that are more than effective against the types
@@ -85,10 +91,11 @@ exports.getEffectivenessMapAgainst = function (pokedex, pogo=false) {
  * @param pokedex the pokedex
  * @param {boolean} pogo whether to use pogo multipliers
  */
-exports.getGoodCounterTypes = function (pokedex, pogo=false) {
-  return getTypes(pokedex)
+async function getGoodCounterTypes (pokedex, pogo=false) {
+  return await getTypes(pokedex)
     .then(types => typesApi.getGoodCounterTypes(types, pogo))
 }
+exports.getGoodCounterTypes = getGoodCounterTypes
 
 /**
  * Gets a list of types that are less than effective against the types
@@ -96,10 +103,11 @@ exports.getGoodCounterTypes = function (pokedex, pogo=false) {
  * @param pokedex the pokedex
  * @param {boolean} pogo whether to use pogo multipliers
  */
-exports.getBadCounterTypes = function (pokedex, pogo=false) {
-  return getTypes(pokedex)
+async function getBadCounterTypes (pokedex, pogo=false) {
+  return await getTypes(pokedex)
     .then(types => typesApi.getBadCounterTypes(types, pogo))
 }
+exports.getBadCounterTypes = getBadCounterTypes
 
 function getPokemonObject (speciesBody) {
   return {
